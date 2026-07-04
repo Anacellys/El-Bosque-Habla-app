@@ -5,6 +5,7 @@ import { AppText } from "./AppText";
 interface PrimaryButtonProps {
   title: string;
   onPress: () => void;
+  onLongPress?: () => void;
   icon?: string;
   variant?: "primary" | "secondary";
   disabled?: boolean;
@@ -13,6 +14,7 @@ interface PrimaryButtonProps {
 export function PrimaryButton({
   title,
   onPress,
+  onLongPress,
   icon,
   variant = "primary",
   disabled,
@@ -20,6 +22,7 @@ export function PrimaryButton({
   return (
     <Pressable
       onPress={onPress}
+      onLongPress={onLongPress}
       disabled={disabled}
       style={({ pressed }) => [
         styles.button,
