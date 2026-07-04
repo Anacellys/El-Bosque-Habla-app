@@ -1,37 +1,39 @@
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
 import { useAppContext } from "@/context/AppContext";
 import { ANIMALS, PARKS } from "@/data/app-data";
+import { getCachedImageUri } from "@/utils/imageCache";
 
 const BADGES = [
   {
     id: "novato",
     name: "Explorador Novato",
-    icon: "🌱",
+    icon: "",
     req: 1,
     desc: "Descubre tu primer animal",
   },
   {
     id: "aventurero",
     name: "Aventurero",
-    icon: "🎒",
+    icon: "",
     req: 3,
     desc: "Descubre 3 animales",
   },
   {
     id: "guardian",
     name: "Guardián del Bosque",
-    icon: "🌿",
+    icon: "",
     req: 5,
     desc: "Descubre 5 animales",
   },
   {
     id: "maestro",
     name: "Maestro Naturalista",
-    icon: "🏆",
+    icon: "",
     req: 8,
     desc: "Descubre todos los animales",
   },
@@ -48,6 +50,18 @@ export function CollectionScreen() {
     selectAnimal(animalId);
     router.push("/animal-info");
   };
+
+  useEffect(() => {
+    // Prefetch discovered animals images into cache
+    (async () => {
+      for (const id of discoveries) {
+        const a = ANIMALS.find((x) => x.id === id);
+        if (a && typeof a.image === "string") {
+          getCachedImageUri(a.id, a.image as string).catch(() => {});
+        }
+      }
+    })();
+  }, [discoveries]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -199,9 +213,16 @@ export function CollectionScreen() {
                             : styles.animalEmojiWrapLocked,
                         ]}
                       >
-                        <AppText style={styles.animalEmoji}>
-                          {isDiscovered ? animal.emoji : "❓"}
-                        </AppText>
+                        {isDiscovered && animal.image ? (
+                          <Image
+                            source={{ uri: animal.image }}
+                            style={styles.animalImage}
+                          />
+                        ) : (
+                          <AppText style={styles.animalEmoji}>
+                            {isDiscovered ? animal.emoji : "❓"}
+                          </AppText>
+                        )}
                       </View>
                       <AppText
                         style={[
@@ -359,6 +380,7 @@ const styles = StyleSheet.create({
   },
   animalEmojiWrapLocked: { backgroundColor: "#EEEEEE" },
   animalEmoji: { fontSize: 36 },
+  animalImage: { width: 56, height: 56, borderRadius: 8 },
   animalName: { marginTop: 6, fontSize: 12, fontWeight: "800" },
   animalNameActive: { color: "#1A3A1A" },
   animalNameLocked: { color: "#9E9E9E" },

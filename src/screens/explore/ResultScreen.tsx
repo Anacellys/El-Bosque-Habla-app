@@ -1,11 +1,13 @@
 import { useRouter } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/app-data";
+import { getCachedImageUri } from "@/utils/imageCache";
 
 export function ResultScreen() {
   const router = useRouter();
@@ -13,10 +15,27 @@ export function ResultScreen() {
   const reward = lastResult?.correct ? 50 : 10;
   const animal = ANIMALS.find((entry) => entry.id === lastResult?.animalId);
   const correct = lastResult?.correct ?? false;
+  const { discoveries } = useAppContext();
+  const completedAll = discoveries.length >= ANIMALS.length;
 
   if (!animal) {
     return null;
   }
+
+  const [localImageUri, setLocalImageUri] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (typeof animal.image === "string") {
+        const uri = await getCachedImageUri(animal.id, animal.image as string);
+        if (mounted && uri) setLocalImageUri(uri);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [animal]);
 
   return (
     <SafeAreaView
@@ -29,17 +48,29 @@ export function ResultScreen() {
         variant="title"
         style={[styles.title, correct ? styles.successText : styles.failText]}
       >
-        {correct ? "¡Excelente!" : "¡Casi lo logras!"}
+        {completedAll
+          ? "¡Felicidades, Maestro Naturalista!"
+          : correct
+            ? "¡Excelente!"
+            : "¡Casi lo logras!"}
       </AppText>
       <AppText style={styles.description}>
-        {correct
-          ? `¡Descubriste al ${animal.name}! Eres un gran explorador.`
-          : `Era el ${animal.name}. ¡Sigue intentando, explorador!`}
+        {completedAll
+          ? `Has descubierto todas las especies. ¡Gracias por explorar y proteger el bosque!`
+          : correct
+            ? `¡Descubriste al ${animal.name}! Eres un gran explorador.`
+            : `Era el ${animal.name}. ¡Sigue intentando, explorador!`}
       </AppText>
 
       <View style={styles.card}>
         <View style={styles.cardHero}>
-          <AppText style={styles.animalEmoji}>{animal.emoji}</AppText>
+          {localImageUri ? (
+            <Image source={{ uri: localImageUri }} style={styles.resultImage} />
+          ) : animal.image ? (
+            <Image source={{ uri: animal.image }} style={styles.resultImage} />
+          ) : (
+            <AppText style={styles.animalEmoji}>{animal.emoji}</AppText>
+          )}
         </View>
         <View style={styles.cardBody}>
           <AppText variant="subtitle">{animal.name}</AppText>
@@ -60,14 +91,7 @@ export function ResultScreen() {
       <View style={styles.actions}>
         <PrimaryButton
           title="Continuar Explorando"
-          icon="🗺️"
           onPress={() => router.push("/map")}
-        />
-        <PrimaryButton
-          title="Conocer más"
-          icon="📚"
-          variant="secondary"
-          onPress={() => router.push("/animal-info")}
         />
       </View>
     </SafeAreaView>
@@ -120,6 +144,7 @@ const styles = StyleSheet.create({
     paddingVertical: 28,
   },
   animalEmoji: { fontSize: 84 },
+  resultImage: { width: 160, height: 160, borderRadius: 14 },
   cardBody: { padding: 16 },
   cardMeta: { color: "#5A7A5A", fontWeight: "700", marginTop: 4 },
   pointsRow: {

@@ -38,17 +38,18 @@ export function SplashScreen() {
           <QuetzalMascot size={80} withHat={false} style={styles.logoIcon} />
         </View>
         <AppText variant="title" style={styles.title}>
-          El Bosque Habla 🌿
+          El Bosque Habla
         </AppText>
         <View style={styles.badge}>
           <AppText style={styles.badgeText}>
-            🦜 Descubre la fauna de Panamá
+            Descubre la fauna de Panamá
           </AppText>
         </View>
       </View>
 
       <Animated.View style={[styles.mascotWrap, { transform: [{ scale }] }]}>
         <QuetzalMascot size={180} style={styles.mascot} />
+      </Animated.View>
 
       <View style={styles.bottomArea}>
         <Pressable

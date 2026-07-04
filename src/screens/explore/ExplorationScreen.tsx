@@ -14,27 +14,27 @@ const PARK_IMAGES: Record<
 > = {
   quetzales: {
     color: "#2E7D32",
-    emoji: "🌿",
+    emoji: "",
     scene: "Sendero entre neblina y helechos gigantes",
   },
   baru: {
     color: "#546E7A",
-    emoji: "🌋",
+    emoji: "",
     scene: "Cima del volcán más alto de Panamá",
   },
   coiba: {
     color: "#1565C0",
-    emoji: "🌊",
+    emoji: "",
     scene: "Aguas cristalinas del Pacífico",
   },
   metropolitano: {
     color: "#388E3C",
-    emoji: "🌳",
+    emoji: "",
     scene: "Bosque tropical en ciudad",
   },
   darien: {
     color: "#F57C00",
-    emoji: "🦁",
+    emoji: "",
     scene: "Selva del Darién, la más biodiversa",
   },
 };

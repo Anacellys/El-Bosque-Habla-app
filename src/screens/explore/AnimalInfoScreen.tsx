@@ -1,11 +1,13 @@
 import { useRouter } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
-import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/app-data";
+import { getCachedImageUri } from "@/utils/imageCache";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 
 const ANIMAL_COLORS: Record<string, string> = {
   quetzal: "#1B5E20",
@@ -82,6 +84,65 @@ export function AnimalInfoScreen() {
     return null;
   }
 
+  const player = useAudioPlayer(animal.soundUrl ?? null);
+  const status = useAudioPlayerStatus(player as any);
+  const [playing, setPlaying] = useState(false);
+  const [localImageUri, setLocalImageUri] = useState<string | null>(null);
+
+  async function handlePlaySound() {
+    try {
+      if (!animal || !animal.soundUrl) return;
+
+      // If already playing, pause
+      if (status?.playing) {
+        player.pause();
+        setPlaying(false);
+        return;
+      }
+
+      // Replace source (safe for remote URLs) and start playback
+      // `replace` is idempotent if the same source is already loaded
+      try {
+        // some players may not need replace, but call it to ensure the right source
+        player.replace(animal.soundUrl as any);
+      } catch (e) {
+        // ignore if replace isn't supported on the current runtime
+      }
+
+      player.play();
+      setPlaying(true);
+    } catch (err) {
+      setPlaying(false);
+    }
+  }
+
+  // Update local playing state based on player status
+  useEffect(() => {
+    if (!status) return;
+    if ((status as any).didJustFinish) {
+      setPlaying(false);
+    } else if ((status as any).playing) {
+      setPlaying(true);
+    } else {
+      setPlaying(false);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      if (!animal) return;
+      if (typeof animal.image === "string") {
+        const uri = await getCachedImageUri(animal.id, animal.image as string);
+        if (mounted && uri) setLocalImageUri(uri);
+      }
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, [animal]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View
@@ -94,7 +155,20 @@ export function AnimalInfoScreen() {
         <AppText variant="title" style={styles.heroTitle}>
           {animal.name}
         </AppText>
-        <AppText style={styles.heroEmoji}>{animal.emoji}</AppText>
+        {localImageUri ? (
+          <Image source={{ uri: localImageUri }} style={styles.heroImage} />
+        ) : animal.image ? (
+          <Image
+            source={
+              typeof animal.image === "string"
+                ? { uri: animal.image }
+                : animal.image
+            }
+            style={styles.heroImage}
+          />
+        ) : (
+          <AppText style={styles.heroEmoji}>{animal.emoji}</AppText>
+        )}
       </View>
 
       <ScrollView
@@ -116,6 +190,14 @@ export function AnimalInfoScreen() {
           <AppText style={styles.factText}>{animal.fact}</AppText>
         </View>
 
+        <View style={{ marginTop: 8 }}>
+          <Pressable style={styles.playButton} onPress={handlePlaySound}>
+            <AppText style={styles.playButtonText}>
+              {playing ? "Detener sonido" : "Escuchar sonido del animal"}
+            </AppText>
+          </Pressable>
+        </View>
+
         {stats ? (
           <View style={styles.statsWrap}>
             <AppText style={styles.statsTitle}>📊 FICHA TÉCNICA</AppText>
@@ -135,17 +217,6 @@ export function AnimalInfoScreen() {
             </View>
           </View>
         ) : null}
-
-        <PrimaryButton
-          title={`Escuchar sonido del ${animal.name}`}
-          icon="🔊"
-          onPress={() => {}}
-        />
-        <PrimaryButton
-          title="Continuar Explorando"
-          icon="🗺️"
-          onPress={() => router.push("/map")}
-        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -179,6 +250,14 @@ const styles = StyleSheet.create({
   },
   heroTitle: { marginTop: 6, color: "#FFFFFF", fontSize: 28 },
   heroEmoji: { position: "absolute", right: 18, bottom: 12, fontSize: 110 },
+  heroImage: {
+    position: "absolute",
+    right: 18,
+    bottom: 12,
+    width: 140,
+    height: 140,
+    borderRadius: 12,
+  },
   content: { padding: 18, gap: 12, paddingBottom: 24 },
   infoCard: {
     backgroundColor: "#FFFFFF",
@@ -227,4 +306,12 @@ const styles = StyleSheet.create({
   },
   statIcon: { fontSize: 18 },
   statLabel: { color: "#5A7A5A", fontSize: 11, fontWeight: "700" },
+  playButton: {
+    backgroundColor: "#2E7D32",
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  playButtonText: { color: "#FFFFFF", fontWeight: "800" },
 });

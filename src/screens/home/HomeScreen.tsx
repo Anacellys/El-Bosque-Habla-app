@@ -14,7 +14,6 @@ export function HomeScreen() {
   const total = ANIMALS.length;
   const found = discoveries.length;
   const pct = Math.round((found / total) * 100);
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -24,7 +23,9 @@ export function HomeScreen() {
         <View style={styles.headerRow}>
           <View>
             <AppText style={styles.greeting}>¡Hola, Explorador!</AppText>
-            <AppText variant="title">El Bosque Habla 🌿</AppText>
+            <AppText variant="title" style={styles.title}>
+              El Bosque Habla
+            </AppText>
           </View>
           <Pressable
             style={styles.collectionButton}
@@ -56,13 +57,15 @@ export function HomeScreen() {
               </AppText>
             </View>
             <View style={styles.progressBadge}>
-              <AppText style={styles.badgeIcon}>🌟</AppText>
+              <AppText style={styles.badgeIcon} />
               <AppText style={styles.badgeValue}>{pct}%</AppText>
             </View>
           </View>
+
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: `${pct}%` }]} />
           </View>
+
           <View style={styles.badgesRow}>
             {[
               "Explorador Novato",
@@ -76,7 +79,6 @@ export function HomeScreen() {
                   index === 0 && styles.badgePillActive,
                 ]}
               >
-                <AppText>{index === 0 ? "✅" : "🔒"}</AppText>
                 <AppText
                   style={[
                     styles.badgePillText,
@@ -120,7 +122,7 @@ export function HomeScreen() {
 
         <View style={styles.footerNote}>
           <AppText style={styles.footerText}>
-            Puntos acumulados: {points} ⭐
+            Puntos acumulados: {points}
           </AppText>
         </View>
       </ScrollView>
@@ -138,32 +140,28 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   greeting: { color: "#5A7A5A", fontWeight: "700", marginBottom: 2 },
+  title: { fontSize: 20, fontWeight: "900", color: "#1A3A1A" },
   collectionButton: {
     width: 44,
     height: 44,
-    borderRadius: 16,
-    backgroundColor: "#3D8B37",
+    borderRadius: 12,
+    backgroundColor: "rgba(0,0,0,0.04)",
     alignItems: "center",
     justifyContent: "center",
   },
-  collectionIcon: { fontSize: 20 },
+  collectionIcon: { fontSize: 18 },
   heroCard: {
-    backgroundColor: "#2E7D32",
     borderRadius: 24,
     padding: 20,
     minHeight: 220,
+    backgroundColor: "#1B5E20",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
-    alignItems: "flex-end",
-    overflow: "hidden",
   },
-  heroTextWrap: { flex: 1, paddingRight: 12 },
-  heroLabel: {
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  heroTitle: { color: "#FFFFFF", fontSize: 22, marginTop: 2, lineHeight: 26 },
+  heroTextWrap: { maxWidth: "60%" },
+  heroLabel: { color: "#E8F5E9", fontWeight: "800" },
+  heroTitle: { marginTop: 6, color: "#FFFFFF", fontSize: 18 },
   heroMeta: {
     color: "rgba(255,255,255,0.8)",
     fontSize: 12,
