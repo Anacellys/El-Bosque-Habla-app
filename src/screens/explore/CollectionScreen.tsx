@@ -5,8 +5,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
 import { useAppContext } from "@/context/AppContext";
-import { ANIMALS, PARKS } from "@/data/app-data";
+import { ANIMALS, PROVINCES } from "@/data/app-data";
 import { getCachedImageUri } from "@/utils/imageCache";
+import { resolveImageSource } from "@/utils/imageSource";
 
 const BADGES = [
   {
@@ -85,9 +86,11 @@ export function CollectionScreen() {
             { label: "Animales", value: `${found}/${total}`, icon: "🦜" },
             { label: "Puntos", value: points, icon: "⭐" },
             {
-              label: "Parques",
-              value: PARKS.filter((park) =>
-                park.animals.some((animalId) => discoveries.includes(animalId)),
+              label: "Provincias",
+              value: PROVINCES.filter((province) =>
+                province.animals.some((animalId) =>
+                  discoveries.includes(animalId),
+                ),
               ).length,
               icon: "🗺️",
             },
@@ -165,32 +168,38 @@ export function CollectionScreen() {
           })}
         </ScrollView>
 
-        {PARKS.map((park) => {
-          const parkAnimals = ANIMALS.filter(
-            (animal) => animal.parkId === park.id,
+        {PROVINCES.map((province) => {
+          const provinceAnimals = ANIMALS.filter(
+            (animal) => animal.provinceId === province.id,
           );
           return (
-            <View key={park.id} style={styles.parkSection}>
-              <View style={styles.parkHeading}>
-                <AppText style={styles.parkEmoji}>{park.emoji}</AppText>
-                <AppText variant="subtitle">{park.name}</AppText>
+            <View key={province.id} style={styles.provinceSection}>
+              <View style={styles.provinceHeading}>
+                <AppText style={styles.provinceEmoji}>{province.emoji}</AppText>
+                <AppText variant="subtitle">{province.name}</AppText>
                 <View
-                  style={[styles.parkCount, { backgroundColor: park.bgColor }]}
+                  style={[
+                    styles.provinceCount,
+                    { backgroundColor: province.bgColor },
+                  ]}
                 >
                   <AppText
-                    style={[styles.parkCountText, { color: park.color }]}
+                    style={[
+                      styles.provinceCountText,
+                      { color: province.color },
+                    ]}
                   >
                     {
-                      parkAnimals.filter((animal) =>
+                      provinceAnimals.filter((animal) =>
                         discoveries.includes(animal.id),
                       ).length
                     }
-                    /{parkAnimals.length}
+                    /{provinceAnimals.length}
                   </AppText>
                 </View>
               </View>
               <View style={styles.animalsGrid}>
-                {parkAnimals.map((animal) => {
+                {provinceAnimals.map((animal) => {
                   const isDiscovered = discoveries.includes(animal.id);
                   return (
                     <Pressable
@@ -209,13 +218,13 @@ export function CollectionScreen() {
                         style={[
                           styles.animalEmojiWrap,
                           isDiscovered
-                            ? { backgroundColor: park.bgColor }
+                            ? { backgroundColor: province.bgColor }
                             : styles.animalEmojiWrapLocked,
                         ]}
                       >
                         {isDiscovered && animal.image ? (
                           <Image
-                            source={{ uri: animal.image }}
+                            source={resolveImageSource(animal.image)}
                             style={styles.animalImage}
                           />
                         ) : (
@@ -236,7 +245,7 @@ export function CollectionScreen() {
                       </AppText>
                       {isDiscovered ? (
                         <AppText style={styles.animalMeta}>
-                          📍 {park.region}
+                          📍 {province.region}
                         </AppText>
                       ) : (
                         <AppText style={styles.animalMetaLocked}>
@@ -358,16 +367,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   badgeDone: { marginTop: 4, color: "#3D8B37", fontSize: 9, fontWeight: "800" },
-  parkSection: { gap: 8 },
-  parkHeading: { flexDirection: "row", alignItems: "center", gap: 6 },
-  parkEmoji: { fontSize: 18 },
-  parkCount: {
+  provinceSection: { gap: 8 },
+  provinceHeading: { flexDirection: "row", alignItems: "center", gap: 6 },
+  provinceEmoji: { fontSize: 18 },
+  provinceCount: {
     marginLeft: "auto",
     borderRadius: 999,
     paddingHorizontal: 8,
     paddingVertical: 3,
   },
-  parkCountText: { fontSize: 11, fontWeight: "800" },
+  provinceCountText: { fontSize: 11, fontWeight: "800" },
   animalsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   animalCard: { width: "47%", borderRadius: 16, padding: 8, borderWidth: 2 },
   animalCardActive: { backgroundColor: "#FFFFFF", borderColor: "#3D8B37" },

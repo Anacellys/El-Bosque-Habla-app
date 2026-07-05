@@ -12,11 +12,12 @@ import type { ResultState } from "@/types/app";
 interface AppContextValue {
   discoveries: string[];
   stars: number;
+  points: number;
   narrationEnabled: boolean;
-  selectedParkId: string | null;
+  selectedProvinceId: string | null;
   selectedAnimalId: string | null;
   lastResult: ResultState | null;
-  selectPark: (parkId: string) => void;
+  selectProvince: (provinceId: string) => void;
   selectAnimal: (animalId: string) => void;
   markDiscovery: (animalId: string) => void;
   recordResult: (animalId: string, correct: boolean) => void;
@@ -31,7 +32,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [discoveries, setDiscoveries] = useState<string[]>([]);
   const [stars, setStars] = useState(0);
   const [narrationEnabled, setNarrationEnabled] = useState(true);
-  const [selectedParkId, setSelectedParkId] = useState<string | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
+    null,
+  );
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<ResultState | null>(null);
 
@@ -71,7 +74,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem("narrationEnabled", String(narrationEnabled));
   }, [narrationEnabled]);
 
-  const selectPark = (parkId: string) => setSelectedParkId(parkId);
+  const selectProvince = (provinceId: string) =>
+    setSelectedProvinceId(provinceId);
   const selectAnimal = (animalId: string) => setSelectedAnimalId(animalId);
 
   const markDiscovery = (animalId: string) => {
@@ -108,11 +112,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     () => ({
       discoveries,
       stars,
+      points: stars,
       narrationEnabled,
-      selectedParkId,
+      selectedProvinceId,
       selectedAnimalId,
       lastResult,
-      selectPark,
+      selectProvince,
       selectAnimal,
       markDiscovery,
       recordResult,
@@ -122,7 +127,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [
       discoveries,
       narrationEnabled,
-      selectedParkId,
+      selectedProvinceId,
       selectedAnimalId,
       stars,
       lastResult,

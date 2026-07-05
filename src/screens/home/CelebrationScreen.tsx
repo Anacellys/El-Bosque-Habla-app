@@ -12,6 +12,7 @@ import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
+import { resolveImageSource } from "@/utils/imageSource";
 
 export function CelebrationScreen() {
   const router = useRouter();
@@ -202,7 +203,10 @@ export function CelebrationScreen() {
         </AppText>
 
         <View style={styles.card}>
-          <Image source={{ uri: animal.image }} style={styles.image} />
+          <Image
+            source={resolveImageSource(animal.image)}
+            style={styles.image}
+          />
           <AppText variant="subtitle" style={styles.animalName}>
             {animal.name}
           </AppText>

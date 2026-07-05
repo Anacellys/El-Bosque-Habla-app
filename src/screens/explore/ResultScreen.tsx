@@ -67,14 +67,17 @@ export function ResultScreen() {
           {localImageUri ? (
             <Image source={{ uri: localImageUri }} style={styles.resultImage} />
           ) : animal.image ? (
-            <Image source={{ uri: animal.image }} style={styles.resultImage} />
+            <Image
+              source={resolveImageSource(animal.image)}
+              style={styles.resultImage}
+            />
           ) : (
             <AppText style={styles.animalEmoji}>{animal.emoji}</AppText>
           )}
         </View>
         <View style={styles.cardBody}>
           <AppText variant="subtitle">{animal.name}</AppText>
-          <AppText style={styles.cardMeta}>📍 {animal.park}</AppText>
+          <AppText style={styles.cardMeta}>📍 {animal.province}</AppText>
         </View>
       </View>
 

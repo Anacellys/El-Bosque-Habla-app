@@ -10,6 +10,7 @@ import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
+import { resolveImageSource } from "@/utils/imageSource";
 
 export function ListenScreen() {
   const router = useRouter();
@@ -38,7 +39,10 @@ export function ListenScreen() {
       >
         {ANIMALS.map((animal) => (
           <View key={animal.id} style={styles.card}>
-            <Image source={{ uri: animal.image }} style={styles.image} />
+            <Image
+              source={resolveImageSource(animal.image)}
+              style={styles.image}
+            />
             <View style={styles.cardBody}>
               <AppText variant="subtitle" style={styles.animalName}>
                 {animal.name}

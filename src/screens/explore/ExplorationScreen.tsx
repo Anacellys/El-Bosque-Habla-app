@@ -6,55 +6,60 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { useAppContext } from "@/context/AppContext";
-import { ANIMALS, PARKS, QUIZ_OPTIONS } from "@/data/app-data";
+import { ANIMALS, PROVINCES, QUIZ_OPTIONS } from "@/data/app-data";
 
-const PARK_IMAGES: Record<
+const PROVINCE_IMAGES: Record<
   string,
   { color: string; emoji: string; scene: string }
 > = {
-  quetzales: {
+  "bocas-toro": {
     color: "#2E7D32",
     emoji: "",
-    scene: "Sendero entre neblina y helechos gigantes",
+    scene: "Ríos y manglares de Bocas del Toro",
   },
-  baru: {
-    color: "#546E7A",
+  chiriqui: {
+    color: "#1B5E20",
     emoji: "",
-    scene: "Cima del volcán más alto de Panamá",
+    scene: "Bosques montañosos de Chiriquí",
   },
-  coiba: {
+  colon: {
     color: "#1565C0",
     emoji: "",
-    scene: "Aguas cristalinas del Pacífico",
+    scene: "Selvas del Caribe en Colón",
   },
-  metropolitano: {
-    color: "#388E3C",
+  herrera: {
+    color: "#C62828",
     emoji: "",
-    scene: "Bosque tropical en ciudad",
+    scene: "Llanuras y bosques de Herrera",
   },
-  darien: {
-    color: "#F57C00",
+  panama: {
+    color: "#6A1B9A",
     emoji: "",
-    scene: "Selva del Darién, la más biodiversa",
+    scene: "Selva urbana de Panamá",
+  },
+  "panama-oeste": {
+    color: "#558B2F",
+    emoji: "",
+    scene: "Bosques y ríos de Panamá Oeste",
   },
 };
 
 export function ExplorationScreen() {
   const router = useRouter();
-  const { selectedParkId, recordResult } = useAppContext();
-  const park = PARKS.find((entry) => entry.id === selectedParkId)!;
-  const parkAnimals = useMemo(
-    () => ANIMALS.filter((animal) => animal.parkId === selectedParkId),
-    [selectedParkId],
+  const { selectedProvinceId, recordResult } = useAppContext();
+  const province = PROVINCES.find((entry) => entry.id === selectedProvinceId)!;
+  const provinceAnimals = useMemo(
+    () => ANIMALS.filter((animal) => animal.provinceId === selectedProvinceId),
+    [selectedProvinceId],
   );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [soundPlaying, setSoundPlaying] = useState(false);
 
-  const animal = parkAnimals[currentIndex];
+  const animal = provinceAnimals[currentIndex];
   const options = QUIZ_OPTIONS[animal.id];
-  const scene = PARK_IMAGES[park.id] || PARK_IMAGES.metropolitano;
-  const progress = ((currentIndex + 1) / parkAnimals.length) * 100;
+  const scene = PROVINCE_IMAGES[province.id] || PROVINCE_IMAGES.panama;
+  const progress = ((currentIndex + 1) / provinceAnimals.length) * 100;
 
   const handleAnswer = (option: string) => {
     if (answered) {
@@ -82,11 +87,11 @@ export function ExplorationScreen() {
             <AppText style={styles.iconText}>←</AppText>
           </Pressable>
           <View style={styles.heroBadge}>
-            <AppText style={styles.heroBadgeText}>{park.name}</AppText>
+            <AppText style={styles.heroBadgeText}>{province.name}</AppText>
           </View>
           <View style={styles.heroCounter}>
             <AppText style={styles.heroCounterText}>
-              {currentIndex + 1}/{parkAnimals.length}
+              {currentIndex + 1}/{provinceAnimals.length}
             </AppText>
           </View>
         </View>

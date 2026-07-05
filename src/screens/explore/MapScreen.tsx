@@ -4,14 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
 import { useAppContext } from "@/context/AppContext";
-import { PARKS } from "@/data/app-data";
+import { PROVINCES } from "@/data/app-data";
 
 export function MapScreen() {
   const router = useRouter();
-  const { discoveries, selectPark } = useAppContext();
+  const { discoveries, selectProvince } = useAppContext();
 
-  const handleSelectPark = (parkId: string) => {
-    selectPark(parkId);
+  const handleSelectProvince = (provinceId: string) => {
+    selectProvince(provinceId);
     router.push("/exploration");
   };
 
@@ -34,28 +34,34 @@ export function MapScreen() {
         <View style={styles.canalMark}>
           <AppText style={styles.canalText}>Canal 🚢</AppText>
         </View>
-        {PARKS.map((park) => {
-          const hasDiscovery = park.animals.some((animalId) =>
+        {PROVINCES.map((province) => {
+          const hasDiscovery = province.animals.some((animalId) =>
             discoveries.includes(animalId),
           );
           return (
             <Pressable
-              key={park.id}
+              key={province.id}
               style={[
                 styles.parkPoint,
-                { left: `${park.x}%`, top: `${park.y}%` },
+                { left: `${province.x}%`, top: `${province.y}%` },
               ]}
-              onPress={() => handleSelectPark(park.id)}
+              onPress={() => handleSelectProvince(province.id)}
             >
-              <View style={[styles.parkBadge, { backgroundColor: park.color }]}>
-                <AppText style={styles.parkEmoji}>{park.emoji}</AppText>
+              <View
+                style={[styles.parkBadge, { backgroundColor: province.color }]}
+              >
+                <AppText style={styles.parkEmoji}>{province.emoji}</AppText>
                 {hasDiscovery ? <View style={styles.discoveryDot} /> : null}
               </View>
               <View style={styles.parkLabel}>
                 <AppText
-                  style={{ color: park.color, fontSize: 9, fontWeight: "800" }}
+                  style={{
+                    color: province.color,
+                    fontSize: 9,
+                    fontWeight: "800",
+                  }}
                 >
-                  {park.name}
+                  {province.name}
                 </AppText>
               </View>
             </Pressable>
@@ -70,36 +76,39 @@ export function MapScreen() {
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
       >
-        {PARKS.map((park) => {
-          const hasDiscovery = park.animals.some((animalId) =>
+        {PROVINCES.map((province) => {
+          const hasDiscovery = province.animals.some((animalId) =>
             discoveries.includes(animalId),
           );
           return (
             <Pressable
-              key={park.id}
+              key={province.id}
               style={[styles.parkCard, hasDiscovery && styles.parkCardActive]}
-              onPress={() => handleSelectPark(park.id)}
+              onPress={() => handleSelectProvince(province.id)}
             >
               <View
-                style={[styles.parkIconWrap, { backgroundColor: park.bgColor }]}
+                style={[
+                  styles.parkIconWrap,
+                  { backgroundColor: province.bgColor },
+                ]}
               >
-                <AppText style={styles.parkEmoji}>{park.emoji}</AppText>
+                <AppText style={styles.parkEmoji}>{province.emoji}</AppText>
               </View>
               <View style={styles.parkCardBody}>
-                <AppText variant="subtitle">{park.name}</AppText>
+                <AppText variant="subtitle">{province.name}</AppText>
                 <AppText style={styles.parkRegion}>
-                  {park.region} • {park.animals.length} animales
+                  {province.region} • {province.animals.length} animales
                 </AppText>
                 {hasDiscovery ? (
                   <AppText
-                    style={[styles.discoveryNote, { color: park.color }]}
+                    style={[styles.discoveryNote, { color: province.color }]}
                   >
                     ⭐ ¡Ya exploraste aquí!
                   </AppText>
                 ) : null}
               </View>
               <View
-                style={[styles.arrowBadge, { backgroundColor: park.color }]}
+                style={[styles.arrowBadge, { backgroundColor: province.color }]}
               >
                 <AppText style={styles.arrowText}>→</AppText>
               </View>

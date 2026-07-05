@@ -6,8 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/app-data";
+import { useAnimalAudio } from "@/services/audio";
 import { getCachedImageUri } from "@/utils/imageCache";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { resolveImageSource } from "@/utils/imageSource";
 
 const ANIMAL_COLORS: Record<string, string> = {
   quetzal: "#1B5E20",
@@ -84,49 +85,13 @@ export function AnimalInfoScreen() {
     return null;
   }
 
-  const player = useAudioPlayer(animal.soundUrl ?? null);
-  const status = useAudioPlayerStatus(player as any);
-  const [playing, setPlaying] = useState(false);
+  const { playSound } = useAnimalAudio();
   const [localImageUri, setLocalImageUri] = useState<string | null>(null);
 
   async function handlePlaySound() {
-    try {
-      if (!animal || !animal.soundUrl) return;
-
-      // If already playing, pause
-      if (status?.playing) {
-        player.pause();
-        setPlaying(false);
-        return;
-      }
-
-      // Replace source (safe for remote URLs) and start playback
-      // `replace` is idempotent if the same source is already loaded
-      try {
-        // some players may not need replace, but call it to ensure the right source
-        player.replace(animal.soundUrl as any);
-      } catch (e) {
-        // ignore if replace isn't supported on the current runtime
-      }
-
-      player.play();
-      setPlaying(true);
-    } catch (err) {
-      setPlaying(false);
-    }
+    if (!animal) return;
+    playSound(animal);
   }
-
-  // Update local playing state based on player status
-  useEffect(() => {
-    if (!status) return;
-    if ((status as any).didJustFinish) {
-      setPlaying(false);
-    } else if ((status as any).playing) {
-      setPlaying(true);
-    } else {
-      setPlaying(false);
-    }
-  }, [status]);
 
   useEffect(() => {
     let mounted = true;
@@ -159,11 +124,7 @@ export function AnimalInfoScreen() {
           <Image source={{ uri: localImageUri }} style={styles.heroImage} />
         ) : animal.image ? (
           <Image
-            source={
-              typeof animal.image === "string"
-                ? { uri: animal.image }
-                : animal.image
-            }
+            source={resolveImageSource(animal.image)}
             style={styles.heroImage}
           />
         ) : (
@@ -181,7 +142,7 @@ export function AnimalInfoScreen() {
           </View>
           <View>
             <AppText style={styles.infoLabel}>UBICACIÓN EN PANAMÁ</AppText>
-            <AppText variant="subtitle">{animal.park}</AppText>
+            <AppText variant="subtitle">{animal.province}</AppText>
           </View>
         </View>
 

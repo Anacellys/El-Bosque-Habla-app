@@ -3,22 +3,20 @@ export interface Animal {
   name: string;
   emoji: string;
   color: string;
-  park: string;
-  parkId: string;
+  province: string;
+  provinceId: string;
   fact: string;
   sound: string;
   discovered: boolean;
   habitat?: string;
-  // `image` puede ser una URL (string) o un módulo `require(...)` (any)
   image?: any;
-  // `soundUrl` es una URL remota; `soundAsset` puede ser un módulo `require(...)` para assets locales
   soundUrl?: string;
   soundAsset?: any;
   nameAudioUrl?: string;
   nameAudioAsset?: any;
 }
 
-export interface Park {
+export interface Province {
   id: string;
   name: string;
   emoji: string;

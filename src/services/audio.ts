@@ -18,8 +18,12 @@ export function useAnimalAudio() {
         return;
       }
 
-      player.replace(source);
-      player.play();
+      try {
+        player.replace(source);
+        player.play();
+      } catch {
+        // Ignorar si el asset no está disponible en tiempo de bundling.
+      }
     },
     [],
   );

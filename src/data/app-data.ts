@@ -1,3 +1,3 @@
-export type { Animal, Park } from "@/types/app";
-export { ANIMALS, PARKS } from "./animals";
+export type { Animal, Province } from "@/types/app";
+export { ANIMALS, PROVINCES, QUIZ_OPTIONS } from "./animals";
 

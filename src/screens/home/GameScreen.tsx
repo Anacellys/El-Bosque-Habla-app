@@ -1,16 +1,16 @@
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-    Animated,
-    Image,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    View,
+  Animated,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
 } from "react-native";
 import {
-    SafeAreaView,
-    useSafeAreaInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
@@ -20,6 +20,7 @@ import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
 import type { Animal } from "@/types/app";
+import { resolveImageSource } from "@/utils/imageSource";
 
 function shuffle<T>(values: T[]): T[] {
   const copy = [...values];
@@ -46,7 +47,7 @@ export function GameScreen() {
     const correct = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
     const distractors = shuffle(
       ANIMALS.filter((animal) => animal.id !== correct.id),
-    ).slice(0, 2);
+    ).slice(0, 1);
     setQuestion(correct);
     setOptions(shuffle([correct, ...distractors]));
     setFeedback("listen");
@@ -168,7 +169,7 @@ export function GameScreen() {
                   onPress={() => handleSelect(animal)}
                 >
                   <Image
-                    source={{ uri: animal.image }}
+                    source={resolveImageSource(animal.image)}
                     style={styles.cardImage}
                   />
                   <View style={styles.cardFooter}>
