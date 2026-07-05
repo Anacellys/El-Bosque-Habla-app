@@ -1,3 +1,5 @@
+import { useAudioPlayer } from "expo-audio";
+import { useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Circle, Ellipse, Path, Rect, Svg } from "react-native-svg";
 
@@ -5,9 +7,38 @@ interface Props {
   size?: number;
   style?: StyleProp<ViewStyle>;
   withHat?: boolean;
+  speakAudio?: string | null;
 }
 
-export function QuetzalMascot({ size = 120, style, withHat = true }: Props) {
+export function QuetzalMascot({
+  size = 120,
+  style,
+  withHat = true,
+  speakAudio,
+}: Props) {
+  const player = useAudioPlayer();
+
+  useEffect(() => {
+    if (!speakAudio) {
+      return;
+    }
+
+    try {
+      player.replace(speakAudio);
+      player.play();
+    } catch {
+      // Ignorar si el audio no está disponible en tiempo de ejecución.
+    }
+
+    return () => {
+      try {
+        player.pause();
+      } catch {
+        // Ignorar al desmontar.
+      }
+    };
+  }, [player, speakAudio]);
+
   return (
     <Svg width={size} height={size} viewBox="0 0 200 220" style={style}>
       {/* Long tail feathers */}

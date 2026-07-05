@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
+import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
-    SafeAreaView,
-    useSafeAreaInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
@@ -30,7 +31,12 @@ export function ListenScreen() {
             Explora y escucha con calma.
           </AppText>
         </View>
-        <QuetzalMascot size={70} withHat={false} style={styles.mascot} />
+        <QuetzalMascot
+          size={70}
+          withHat={false}
+          style={styles.mascot}
+          speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
+        />
       </View>
 
       <ScrollView
@@ -40,7 +46,11 @@ export function ListenScreen() {
         {ANIMALS.map((animal) => (
           <View key={animal.id} style={styles.card}>
             <Image
-              source={resolveImageSource(animal.image)}
+              source={
+                resolveImageSource(animal.image) as
+                  | ImageSourcePropType
+                  | undefined
+              }
               style={styles.image}
             />
             <View style={styles.cardBody}>

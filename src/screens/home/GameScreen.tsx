@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ImageSourcePropType } from "react-native";
 import {
   Animated,
   Image,
@@ -149,7 +150,11 @@ export function GameScreen() {
             <View style={styles.speechBubble}>
               <AppText style={styles.speechText}>{bubbleText}</AppText>
             </View>
-            <QuetzalMascot size={110} style={styles.mascot} />
+            <QuetzalMascot
+              size={110}
+              style={styles.mascot}
+              speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
+            />
           </View>
 
           <View style={styles.promptWrap}>
@@ -159,34 +164,37 @@ export function GameScreen() {
           </View>
 
           <View style={styles.cardsWrap}>
-            {options.map((animal) => (
-              <Animated.View
-                key={animal.id}
-                style={{ transform: [{ translateX: bounce }] }}
-              >
-                <Pressable
-                  style={styles.card}
-                  onPress={() => handleSelect(animal)}
+            {options.map((animal) => {
+              const imageSource = resolveImageSource(animal.image) as
+                | ImageSourcePropType
+                | undefined;
+
+              return (
+                <Animated.View
+                  key={animal.id}
+                  style={{ transform: [{ translateX: bounce }] }}
                 >
-                  <Image
-                    source={resolveImageSource(animal.image)}
-                    style={styles.cardImage}
-                  />
-                  <View style={styles.cardFooter}>
-                    <AppText style={styles.cardName}>{animal.name}</AppText>
-                    <Pressable
-                      style={styles.audioButton}
-                      onPress={(event) => {
-                        event.stopPropagation();
-                        playName(animal);
-                      }}
-                    >
-                      <AppText style={styles.audioButtonText}>🔊</AppText>
-                    </Pressable>
-                  </View>
-                </Pressable>
-              </Animated.View>
-            ))}
+                  <Pressable
+                    style={styles.card}
+                    onPress={() => handleSelect(animal)}
+                  >
+                    <Image source={imageSource} style={styles.cardImage} />
+                    <View style={styles.cardFooter}>
+                      <AppText style={styles.cardName}>{animal.name}</AppText>
+                      <Pressable
+                        style={styles.audioButton}
+                        onPress={(event) => {
+                          event.stopPropagation();
+                          playName(animal);
+                        }}
+                      >
+                        <AppText style={styles.audioButtonText}>🔊</AppText>
+                      </Pressable>
+                    </View>
+                  </Pressable>
+                </Animated.View>
+              );
+            })}
           </View>
 
           <View style={styles.footer}>

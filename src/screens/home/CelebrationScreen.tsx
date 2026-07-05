@@ -1,9 +1,10 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
+import type { ImageSourcePropType } from "react-native";
 import { Animated, Image, StyleSheet, View } from "react-native";
 import {
-    SafeAreaView,
-    useSafeAreaInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
@@ -193,7 +194,11 @@ export function CelebrationScreen() {
             ],
           }}
         >
-          <QuetzalMascot size={140} style={styles.mascot} />
+          <QuetzalMascot
+            size={140}
+            style={styles.mascot}
+            speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
+          />
         </Animated.View>
         <AppText variant="title" style={styles.title}>
           ¡Excelente!
@@ -204,7 +209,11 @@ export function CelebrationScreen() {
 
         <View style={styles.card}>
           <Image
-            source={resolveImageSource(animal.image)}
+            source={
+              resolveImageSource(animal.image) as
+                | ImageSourcePropType
+                | undefined
+            }
             style={styles.image}
           />
           <AppText variant="subtitle" style={styles.animalName}>
