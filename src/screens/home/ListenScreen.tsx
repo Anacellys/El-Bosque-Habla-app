@@ -9,12 +9,15 @@ import {
 import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
+import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
 import { resolveImageSource } from "@/utils/imageSource";
+import { MASCOT_AUDIO } from "../../data/mascotAudio";
 
 export function ListenScreen() {
   const router = useRouter();
+  const { narrationEnabled } = useAppContext();
   const { playSound, playName } = useAnimalAudio();
   const insets = useSafeAreaInsets();
 
@@ -35,7 +38,7 @@ export function ListenScreen() {
           size={70}
           withHat={false}
           style={styles.mascot}
-          speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
+          speakAudio={narrationEnabled ? MASCOT_AUDIO.introEscuchar : null}
         />
       </View>
 

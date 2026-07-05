@@ -12,6 +12,8 @@ export const ANIMALS: Animal[] = [
     sound: "Canto de rana",
     discovered: false,
     image: require("../../assets/images/animals/BocasToro/Rana dardo fresa.jpg"),
+    soundAsset: require("../../assets/sounds/BocasToro/Oophaga_pumilio_call.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/ranaDardoFresa.mp3"),
     habitat: "Bosque tropical",
   },
   {
@@ -25,6 +27,8 @@ export const ANIMALS: Animal[] = [
     sound: "Canto del quetzal",
     discovered: false,
     image: require("../../assets/images/animals/Chiriqui/Quetzal resplandeciente.jpg"),
+    soundAsset: require("../../assets/sounds/Chiriqui/XC274688 - Quetzal guatemalteco - Pharomachrus mocinno.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Quetzal.mp3"),
     habitat: "Bosque nuboso",
   },
   {
@@ -38,6 +42,8 @@ export const ANIMALS: Animal[] = [
     sound: "Llamada de tucán",
     discovered: false,
     image: require("../../assets/images/animals/Colon/Tucán pico iris.png"),
+    soundAsset: require("../../assets/sounds/Colon/XC454095 - Tucán piquiverde - Ramphastos sulfuratus brevicarinatus.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Tucan.mp3"),
     habitat: "Selva tropical",
   },
   {
@@ -51,6 +57,8 @@ export const ANIMALS: Animal[] = [
     sound: "Voz del loro",
     discovered: false,
     image: require("../../assets/images/animals/Herrera/Loro frentirrojo.jpg"),
+    soundAsset: require("../../assets/sounds/Herrera/XC454080 - Amazona frentirroja - Amazona autumnalis.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/loroFrentiRojo.mp3"),
     habitat: "Bosque seco",
   },
   {
@@ -64,6 +72,8 @@ export const ANIMALS: Animal[] = [
     sound: "Maullido del gato",
     discovered: false,
     image: require("../../assets/images/animals/Panama/Gato solo.jpg"),
+    soundAsset: require("../../assets/sounds/Panama/gato_solo_audio.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/gatoSolo.mp3"),
     habitat: "Bosque tropical",
   },
   {
@@ -77,6 +87,8 @@ export const ANIMALS: Animal[] = [
     sound: "Grito del ocelote",
     discovered: false,
     image: require("../../assets/images/animals/Panamá Oeste/Ocelote.jpg"),
+    soundAsset: require("../../assets/sounds/Panamá Oeste/Ocelot Sound Effects.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/ocelote.mp3"),
     habitat: "Bosque húmedo",
   },
 ];

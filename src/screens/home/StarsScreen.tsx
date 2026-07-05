@@ -1,8 +1,8 @@
 import { useRouter } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
-    SafeAreaView,
-    useSafeAreaInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
@@ -11,10 +11,11 @@ import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
+import { MASCOT_AUDIO } from "../../data/mascotAudio";
 
 export function StarsScreen() {
   const router = useRouter();
-  const { discoveries, stars } = useAppContext();
+  const { discoveries, stars, narrationEnabled } = useAppContext();
   const { playSound, playName } = useAnimalAudio();
   const insets = useSafeAreaInsets();
 
@@ -29,7 +30,12 @@ export function StarsScreen() {
           <AppText variant="title">Mis estrellas</AppText>
           <AppText style={styles.subtitle}>Tus logros de hoy.</AppText>
         </View>
-        <QuetzalMascot size={66} withHat={false} style={styles.mascot} />
+        <QuetzalMascot
+          size={66}
+          withHat={false}
+          style={styles.mascot}
+          speakAudio={narrationEnabled ? MASCOT_AUDIO.introEstrellas : null}
+        />
       </View>
 
       <View style={styles.summaryCard}>

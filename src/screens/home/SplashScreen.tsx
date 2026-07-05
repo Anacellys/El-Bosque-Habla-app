@@ -5,9 +5,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
+import { useAppContext } from "@/context/AppContext";
+import { MASCOT_AUDIO } from "../../data/mascotAudio";
 
 export function SplashScreen() {
   const router = useRouter();
+  const { narrationEnabled } = useAppContext();
   const [pressed, setPressed] = useState(false);
   const scale = useState(new Animated.Value(1))[0];
 
@@ -48,7 +51,11 @@ export function SplashScreen() {
       </View>
 
       <Animated.View style={[styles.mascotWrap, { transform: [{ scale }] }]}>
-        <QuetzalMascot size={180} style={styles.mascot} />
+        <QuetzalMascot
+          size={180}
+          style={styles.mascot}
+          speakAudio={narrationEnabled ? MASCOT_AUDIO.bienvenida1 : null}
+        />
       </Animated.View>
 
       <View style={styles.bottomArea}>

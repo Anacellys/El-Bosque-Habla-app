@@ -11,15 +11,23 @@ import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
+import { useAppContext } from "@/context/AppContext";
 import { ANIMALS } from "@/data/animals";
 import { useAnimalAudio } from "@/services/audio";
 import { resolveImageSource } from "@/utils/imageSource";
+import { pickCelebrationAudio } from "../../data/mascotAudio";
 
 export function CelebrationScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ animalId?: string }>();
-  const { playSound, playName } = useAnimalAudio();
+  const { narrationEnabled } = useAppContext();
+  const { playSound, playName, stop } = useAnimalAudio();
   const insets = useSafeAreaInsets();
+  // Se elige una sola vez por celebración, no en cada render.
+  const celebrationAudio = useMemo(
+    () => (narrationEnabled ? pickCelebrationAudio() : null),
+    [narrationEnabled],
+  );
   const fade = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0.96)).current;
   const quetzalY = useRef(new Animated.Value(0)).current;
@@ -43,11 +51,27 @@ export function CelebrationScreen() {
   );
 
   useEffect(() => {
-    if (animal) {
-      playSound(animal);
-      playName(animal);
+    if (!animal) {
+      return;
     }
-  }, [animal, playName, playSound]);
+
+    stop();
+
+    const timeoutId = window.setTimeout(() => {
+      if (narrationEnabled) {
+        playName(animal, { shouldStopOtherPlayers: false });
+      }
+
+      window.setTimeout(() => {
+        playSound(animal, { shouldStopOtherPlayers: false });
+      }, 700);
+    }, 200);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      stop();
+    };
+  }, [animal, narrationEnabled, playName, playSound, stop]);
 
   useEffect(() => {
     Animated.parallel([
@@ -144,6 +168,8 @@ export function CelebrationScreen() {
   ]);
 
   const handleNext = () => {
+    stop();
+
     Animated.sequence([
       Animated.timing(buttonScale, {
         toValue: 0.96,
@@ -197,7 +223,7 @@ export function CelebrationScreen() {
           <QuetzalMascot
             size={140}
             style={styles.mascot}
-            speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
+            speakAudio={celebrationAudio}
           />
         </Animated.View>
         <AppText variant="title" style={styles.title}>
