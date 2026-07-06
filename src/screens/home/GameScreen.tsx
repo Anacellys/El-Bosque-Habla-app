@@ -18,8 +18,9 @@ import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
+import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/animals";
-import { useAnimalAudio } from "@/services/audio";
+import { MASCOT_AUDIO } from "@/data/mascotAudio";
 import type { Animal } from "@/types/app";
 import { resolveImageSource } from "@/utils/imageSource";
 
@@ -35,13 +36,14 @@ function shuffle<T>(values: T[]): T[] {
 export function GameScreen() {
   const router = useRouter();
   const { recordResult, narrationEnabled } = useAppContext();
-  const { playSound, playName } = useAnimalAudio();
+  const { playName, playSequence, stopAll } = useAudio();
   const [question, setQuestion] = useState<Animal | null>(null);
   const [options, setOptions] = useState<Animal[]>([]);
   const [feedback, setFeedback] = useState<"listen" | "retry">("listen");
   const bounce = useRef(new Animated.Value(0)).current;
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(12)).current;
+  const retryAudioIndex = useRef(0);
   const insets = useSafeAreaInsets();
 
   const buildQuestion = () => {
@@ -74,19 +76,28 @@ export function GameScreen() {
   }, [fade, slide]);
 
   useEffect(() => {
-    if (question) {
-      playSound(question);
+    if (!question) {
+      return;
     }
-  }, [playSound, question]);
+    // La mascota pregunta primero y, cuando termina, recién entonces
+    // suena el animal — así nunca se pisan.
+    playSequence([
+      narrationEnabled ? MASCOT_AUDIO.instruccionJuego : null,
+      narrationEnabled ? MASCOT_AUDIO.preguntaSonido : null,
+      question.soundUrl ?? question.soundAsset ?? null,
+    ]);
+
+    return () => {
+      stopAll();
+    };
+  }, [narrationEnabled, playSequence, question, stopAll]);
 
   const bubbleText = useMemo(() => {
     if (feedback === "retry") {
       return "Escuchemos otra vez.";
     }
-    return narrationEnabled
-      ? "¿Quién hizo este sonido?"
-      : "¿Quién hizo este sonido?";
-  }, [feedback, narrationEnabled]);
+    return "¿Quién hizo este sonido?";
+  }, [feedback]);
 
   const triggerBounce = () => {
     Animated.sequence([
@@ -129,7 +140,15 @@ export function GameScreen() {
 
     setFeedback("retry");
     triggerBounce();
-    playSound(question);
+    const retryAudio =
+      retryAudioIndex.current % 2 === 0
+        ? MASCOT_AUDIO.intentaOtraVez
+        : MASCOT_AUDIO.intentaOtraVez2;
+    retryAudioIndex.current += 1;
+    playSequence([
+      narrationEnabled ? retryAudio : null,
+      question.soundUrl ?? question.soundAsset ?? null,
+    ]);
   };
 
   return (
@@ -150,11 +169,7 @@ export function GameScreen() {
             <View style={styles.speechBubble}>
               <AppText style={styles.speechText}>{bubbleText}</AppText>
             </View>
-            <QuetzalMascot
-              size={110}
-              style={styles.mascot}
-              speakAudio="https://actions.google.com/sounds/v1/animals/bird_chirp_1.mp3"
-            />
+            <QuetzalMascot size={110} style={styles.mascot} />
           </View>
 
           <View style={styles.promptWrap}>

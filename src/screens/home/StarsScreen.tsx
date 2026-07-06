@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
   SafeAreaView,
@@ -9,15 +10,23 @@ import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
+import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/animals";
-import { useAnimalAudio } from "@/services/audio";
-import { MASCOT_AUDIO } from "../../data/mascotAudio";
+import { MASCOT_AUDIO } from "@/data/mascotAudio";
 
 export function StarsScreen() {
   const router = useRouter();
   const { discoveries, stars, narrationEnabled } = useAppContext();
-  const { playSound, playName } = useAnimalAudio();
+  const { playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    playSequence([narrationEnabled ? MASCOT_AUDIO.introEstrellas : null]);
+
+    return () => {
+      stopAll();
+    };
+  }, [narrationEnabled, playSequence, stopAll]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,12 +39,7 @@ export function StarsScreen() {
           <AppText variant="title">Mis estrellas</AppText>
           <AppText style={styles.subtitle}>Tus logros de hoy.</AppText>
         </View>
-        <QuetzalMascot
-          size={66}
-          withHat={false}
-          style={styles.mascot}
-          speakAudio={narrationEnabled ? MASCOT_AUDIO.introEstrellas : null}
-        />
+        <QuetzalMascot size={66} withHat={false} style={styles.mascot} />
       </View>
 
       <View style={styles.summaryCard}>
@@ -61,8 +65,10 @@ export function StarsScreen() {
               ]}
               onPress={() => {
                 if (unlocked) {
-                  playSound(animal);
-                  playName(animal);
+                  playSequence([
+                    animal.soundUrl ?? animal.soundAsset ?? null,
+                    animal.nameAudioUrl ?? animal.nameAudioAsset ?? null,
+                  ]);
                 }
               }}
             >

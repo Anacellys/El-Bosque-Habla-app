@@ -7,6 +7,12 @@ import {
 
 import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
+import {
+  FamilyIcon,
+  PlayIcon,
+  SpeakerIcon,
+  StarIcon,
+} from "@/components/ui/Icons";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
@@ -45,32 +51,35 @@ export function HomeScreen() {
           <View style={[styles.progressFill, { width: `${pct}%` }]} />
         </View>
         <View style={styles.starsRow}>
-          <AppText style={styles.starsLabel}>⭐ {stars}</AppText>
-          <AppText style={styles.starsLabel}>🌟 {pct}%</AppText>
+          <View style={styles.starsItem}>
+            <StarIcon size={18} />
+            <AppText style={styles.starsLabel}>{stars}</AppText>
+          </View>
+          <AppText style={styles.starsLabel}>{pct}%</AppText>
         </View>
       </View>
 
       <View style={styles.actions}>
         <PrimaryButton
           title="Jugar"
-          icon="▶️"
+          icon={<PlayIcon size={20} color="#FFFFFF" />}
           onPress={() => router.push("/game" as never)}
         />
         <PrimaryButton
           title="Escuchar animales"
-          icon="🔊"
+          icon={<SpeakerIcon size={20} />}
           variant="secondary"
           onPress={() => router.push("/listen" as never)}
         />
         <PrimaryButton
           title="Mis estrellas"
-          icon="⭐"
+          icon={<StarIcon size={20} />}
           variant="secondary"
           onPress={() => router.push("/stars" as never)}
         />
         <PrimaryButton
           title="Padres"
-          icon="👨‍👩‍👧"
+          icon={<FamilyIcon size={20} />}
           variant="secondary"
           onPress={() => router.push("/parents" as never)}
         />
@@ -158,6 +167,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
+  },
+  starsItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   starsLabel: {
     color: "#1B5E20",

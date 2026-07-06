@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
@@ -10,16 +11,27 @@ import { QuetzalMascot } from "@/components/QuetzalMascot";
 import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
+import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/animals";
-import { useAnimalAudio } from "@/services/audio";
+import { MASCOT_AUDIO } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
-import { MASCOT_AUDIO } from "../../data/mascotAudio";
 
 export function ListenScreen() {
   const router = useRouter();
   const { narrationEnabled } = useAppContext();
-  const { playSound, playName } = useAnimalAudio();
+  const { playSound, playName, playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    playSequence([
+      narrationEnabled ? MASCOT_AUDIO.introEscuchar : null,
+      narrationEnabled ? MASCOT_AUDIO.instruccionEscuchar : null,
+    ]);
+
+    return () => {
+      stopAll();
+    };
+  }, [narrationEnabled, playSequence, stopAll]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,12 +46,7 @@ export function ListenScreen() {
             Explora y escucha con calma.
           </AppText>
         </View>
-        <QuetzalMascot
-          size={70}
-          withHat={false}
-          style={styles.mascot}
-          speakAudio={narrationEnabled ? MASCOT_AUDIO.introEscuchar : null}
-        />
+        <QuetzalMascot size={70} withHat={false} style={styles.mascot} />
       </View>
 
       <ScrollView

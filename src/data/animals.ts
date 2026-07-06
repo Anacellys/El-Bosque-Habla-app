@@ -16,6 +16,7 @@ export const ANIMALS: Animal[] = [
     nameAudioAsset: require("../../assets/audio/nombres/ranaDardoFresa.mp3"),
     habitat: "Bosque tropical",
   },
+
   {
     id: "quetzal",
     name: "Quetzal",
@@ -31,6 +32,7 @@ export const ANIMALS: Animal[] = [
     nameAudioAsset: require("../../assets/audio/nombres/Quetzal.mp3"),
     habitat: "Bosque nuboso",
   },
+
   {
     id: "tucan",
     name: "Tucán",
@@ -46,6 +48,7 @@ export const ANIMALS: Animal[] = [
     nameAudioAsset: require("../../assets/audio/nombres/Tucan.mp3"),
     habitat: "Selva tropical",
   },
+
   {
     id: "loro",
     name: "Loro",
@@ -61,6 +64,7 @@ export const ANIMALS: Animal[] = [
     nameAudioAsset: require("../../assets/audio/nombres/loroFrentiRojo.mp3"),
     habitat: "Bosque seco",
   },
+
   {
     id: "gato",
     name: "Gato",
@@ -76,6 +80,7 @@ export const ANIMALS: Animal[] = [
     nameAudioAsset: require("../../assets/audio/nombres/gatoSolo.mp3"),
     habitat: "Bosque tropical",
   },
+
   {
     id: "ocelote",
     name: "Ocelote",
@@ -90,6 +95,67 @@ export const ANIMALS: Animal[] = [
     soundAsset: require("../../assets/sounds/Panamá Oeste/Ocelot Sound Effects.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/ocelote.mp3"),
     habitat: "Bosque húmedo",
+  },
+
+  {
+    id: "colibri",
+    name: "Colibrí",
+    emoji: "🐦",
+    color: "#00897B",
+    province: "Coclé",
+    provinceId: "cocle",
+    fact: "El colibrí luminoso aletea muy rápido para volar cerca de las flores de Coclé.",
+    sound: "Zumbido del colibrí",
+    discovered: false,
+    image: require("../../assets/images/animals/Cocle/Colibrí de El Valle de Anton.jpg"),
+    soundAsset: require("../../assets/sounds/Cocle/XC297549 - Colibrí luminoso - Calothorax lucifer.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Colibri.mp3"),
+    habitat: "Bosque montañoso",
+  },
+  {
+    id: "ballena",
+    name: "Ballena",
+    emoji: "🐳",
+    color: "#0277BD",
+    province: "Los Santos",
+    provinceId: "los-santos",
+    fact: "La ballena jorobada visita las costas de Los Santos para tener a sus crías.",
+    sound: "Canto de la ballena",
+    discovered: false,
+    image: require("../../assets/images/animals/Los Santos/ballena-jorobada.jpg"),
+    soundAsset: require("../../assets/sounds/Los Santos/ballena.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/ballenaJ.mp3"),
+    habitat: "Costa del Pacífico",
+  },
+  {
+    id: "paloma",
+    name: "Paloma",
+    emoji: "🕊️",
+    color: "#8D6E63",
+    province: "Veraguas",
+    provinceId: "veraguas",
+    fact: "La paloma montaraz de Coiba vive en la isla y los bosques de Veraguas.",
+    sound: "Arrullo de la paloma",
+    discovered: false,
+    image: require("../../assets/images/animals/Veraguas/Paloma de Coiba.jpg"),
+    soundAsset: require("../../assets/sounds/Veraguas/XC185584 - Paloma montaraz de Coiba - Leptotila battyi battyi.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/palomaDeCoiba.mp3"),
+    habitat: "Isla y bosque húmedo",
+  },
+  {
+    id: "aguila",
+    name: "Águila",
+    emoji: "🦅",
+    color: "#37474F",
+    province: "Darién",
+    provinceId: "darien",
+    fact: "El águila arpía es una de las aves rapaces más grandes y vive en la selva del Darién.",
+    sound: "Grito del águila",
+    discovered: false,
+    image: require("../../assets/images/animals/Darien/Águila arpía.jpg"),
+    soundAsset: require("../../assets/sounds/Darien/XC75120 - Arpía mayor - Harpia harpyja.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/águilaH.mp3"),
+    habitat: "Selva tropical",
   },
 ];
 
@@ -160,6 +226,50 @@ export const PROVINCES: Province[] = [
     x: 62,
     y: 60,
   },
+  {
+    id: "cocle",
+    name: "Coclé",
+    emoji: "⛰️",
+    color: "#00897B",
+    bgColor: "#E0F2F1",
+    region: "Valle central",
+    animals: ["colibri"],
+    x: 38,
+    y: 48,
+  },
+  {
+    id: "los-santos",
+    name: "Los Santos",
+    emoji: "🌊",
+    color: "#0277BD",
+    bgColor: "#E1F5FE",
+    region: "Costa del Pacífico",
+    animals: ["ballena"],
+    x: 44,
+    y: 78,
+  },
+  {
+    id: "veraguas",
+    name: "Veraguas",
+    emoji: "🌳",
+    color: "#8D6E63",
+    bgColor: "#EFEBE9",
+    region: "Isla y bosque húmedo",
+    animals: ["paloma"],
+    x: 30,
+    y: 66,
+  },
+  {
+    id: "darien",
+    name: "Darién",
+    emoji: "🌴",
+    color: "#37474F",
+    bgColor: "#ECEFF1",
+    region: "Selva tropical",
+    animals: ["aguila"],
+    x: 88,
+    y: 74,
+  },
 ];
 
 export const QUIZ_OPTIONS: Record<string, string[]> = {
@@ -169,4 +279,8 @@ export const QUIZ_OPTIONS: Record<string, string[]> = {
   loro: ["Loro", "Quetzal", "Tucán"],
   gato: ["Gato", "Ocelote", "Loro"],
   ocelote: ["Ocelote", "Gato", "Loro"],
+  colibri: ["Colibrí", "Paloma", "Águila"],
+  ballena: ["Ballena", "Ocelote", "Colibrí"],
+  paloma: ["Paloma", "Colibrí", "Águila"],
+  aguila: ["Águila", "Ballena", "Tucán"],
 };

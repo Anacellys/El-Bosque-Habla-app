@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
 import type { ImageSourcePropType } from "react-native";
-import { Animated, Image, StyleSheet, View } from "react-native";
+import { Animated, Easing, Image, StyleSheet, View } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -12,163 +12,174 @@ import { AppText } from "@/components/ui/AppText";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
+import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/animals";
-import { useAnimalAudio } from "@/services/audio";
+import { pickCelebrationAudio } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
-import { pickCelebrationAudio } from "../../data/mascotAudio";
+
+const CONFETTI_COLORS = ["#FFD54F", "#66BB6A", "#4FC3F7", "#FF8A65", "#BA68C8"];
+const CONFETTI_ICONS = ["✦", "⭐", "✿", "●"];
+const CONFETTI_COUNT = 14;
 
 export function CelebrationScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ animalId?: string }>();
   const { narrationEnabled } = useAppContext();
-  const { playSound, playName, stop } = useAnimalAudio();
+  const { playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
-  // Se elige una sola vez por celebración, no en cada render.
-  const celebrationAudio = useMemo(
-    () => (narrationEnabled ? pickCelebrationAudio() : null),
-    [narrationEnabled],
-  );
-  const fade = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(0.96)).current;
-  const quetzalY = useRef(new Animated.Value(0)).current;
-  const quetzalScale = useRef(new Animated.Value(1)).current;
-  const quetzalRotate = useRef(new Animated.Value(0)).current;
-  const buttonScale = useRef(new Animated.Value(1)).current;
-  const confettiValues = useRef(
-    Array.from({ length: 8 }, () => new Animated.Value(0)),
-  ).current;
+
   const animal =
     ANIMALS.find((entry) => entry.id === params.animalId) ?? ANIMALS[0];
+
+  // Se elige una sola vez por celebración, no en cada render.
+  const celebrationAudio = useMemo(() => pickCelebrationAudio(), []);
+
+  // --- Animaciones de entrada, todas de una sola pasada (nada en bucle) ---
+  const mascotPop = useRef(new Animated.Value(0)).current;
+  const mascotBounce = useRef(new Animated.Value(0)).current;
+  const titlePop = useRef(new Animated.Value(0)).current;
+  const cardSlide = useRef(new Animated.Value(24)).current;
+  const cardFade = useRef(new Animated.Value(0)).current;
+  const buttonFade = useRef(new Animated.Value(0)).current;
+  const buttonScale = useRef(new Animated.Value(1)).current;
+
   const confettiItems = useMemo(
     () =>
-      Array.from({ length: 8 }, (_, index) => ({
+      Array.from({ length: CONFETTI_COUNT }, (_, index) => ({
         id: index,
-        icon: index % 2 === 0 ? "✦" : "⭐",
-        left: 12 + index * 10,
-        delay: index * 90,
+        icon: CONFETTI_ICONS[index % CONFETTI_ICONS.length],
+        color: CONFETTI_COLORS[index % CONFETTI_COLORS.length],
+        left: 4 + Math.round((index * 92) / CONFETTI_COUNT) + (index % 3) * 2,
+        delay: index * 45,
+        distance: 90 + (index % 4) * 24,
+        rotateTo: index % 2 === 0 ? "70deg" : "-70deg",
       })),
     [],
   );
+  const confettiFall = useRef(
+    confettiItems.map(() => new Animated.Value(0)),
+  ).current;
+  const confettiOpacity = useRef(
+    confettiItems.map(() => new Animated.Value(1)),
+  ).current;
 
+  // --- Audio: mascota -> sonido real del animal -> nombre hablado.
+  // Se reproduce EN ORDEN, esperando a que cada uno termine, para que
+  // nunca se encimen entre sí.
   useEffect(() => {
     if (!animal) {
       return;
     }
 
-    stop();
-
-    const timeoutId = window.setTimeout(() => {
-      if (narrationEnabled) {
-        playName(animal, { shouldStopOtherPlayers: false });
-      }
-
-      window.setTimeout(() => {
-        playSound(animal, { shouldStopOtherPlayers: false });
-      }, 700);
-    }, 200);
+    playSequence([
+      narrationEnabled ? celebrationAudio : null,
+      animal.soundUrl ?? animal.soundAsset ?? null,
+      narrationEnabled
+        ? (animal.nameAudioUrl ?? animal.nameAudioAsset ?? null)
+        : null,
+    ]);
 
     return () => {
-      window.clearTimeout(timeoutId);
-      stop();
+      stopAll();
     };
-  }, [animal, narrationEnabled, playName, playSound, stop]);
+  }, [animal, celebrationAudio, narrationEnabled, playSequence, stopAll]);
 
+  // --- Secuencia visual de entrada: mascota -> título -> tarjeta -> botón.
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fade, {
+    const sequence = Animated.sequence([
+      Animated.spring(mascotPop, {
         toValue: 1,
-        duration: 320,
+        friction: 5,
+        tension: 80,
         useNativeDriver: true,
       }),
-      Animated.timing(scale, {
+      Animated.spring(titlePop, {
         toValue: 1,
-        duration: 360,
+        friction: 6,
+        tension: 90,
         useNativeDriver: true,
       }),
-    ]).start();
-
-    const quetzalLoop = Animated.loop(
       Animated.parallel([
-        Animated.sequence([
-          Animated.timing(quetzalY, {
-            toValue: -8,
-            duration: 260,
-            useNativeDriver: true,
-          }),
-          Animated.timing(quetzalY, {
-            toValue: 0,
-            duration: 260,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(quetzalScale, {
-            toValue: 1.04,
-            duration: 260,
-            useNativeDriver: true,
-          }),
-          Animated.timing(quetzalScale, {
-            toValue: 1,
-            duration: 260,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(quetzalRotate, {
-            toValue: -2,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(quetzalRotate, {
-            toValue: 2,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-          Animated.timing(quetzalRotate, {
-            toValue: 0,
-            duration: 320,
-            useNativeDriver: true,
-          }),
-        ]),
+        Animated.timing(cardFade, {
+          toValue: 1,
+          duration: 280,
+          useNativeDriver: true,
+        }),
+        Animated.timing(cardSlide, {
+          toValue: 0,
+          duration: 280,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
       ]),
+      Animated.timing(buttonFade, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+    ]);
+
+    sequence.start();
+
+    // La mascota da 3 saltitos suaves de bienvenida y se queda quieta.
+    // A propósito NO es un bucle infinito: una animación que nunca se
+    // detiene es justo lo que se sentía "trabado" antes.
+    const bounce = Animated.loop(
+      Animated.sequence([
+        Animated.timing(mascotBounce, {
+          toValue: -10,
+          duration: 260,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(mascotBounce, {
+          toValue: 0,
+          duration: 260,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ]),
+      { iterations: 3 },
     );
+    bounce.start();
 
-    quetzalLoop.start();
-
-    confettiValues.forEach((value, index) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(value, {
-            toValue: -26,
-            duration: 1000 + index * 70,
-            delay: confettiItems[index].delay,
-            useNativeDriver: true,
-          }),
-          Animated.timing(value, {
-            toValue: 0,
-            duration: 0,
-            useNativeDriver: true,
-          }),
-        ]),
-      ).start();
+    // Confeti: una sola explosión al entrar, no una lluvia infinita.
+    confettiItems.forEach((item, index) => {
+      Animated.parallel([
+        Animated.timing(confettiFall[index], {
+          toValue: 1,
+          duration: 900,
+          delay: item.delay,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(confettiOpacity[index], {
+          toValue: 0,
+          duration: 500,
+          delay: item.delay + 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
     });
 
     return () => {
-      quetzalLoop.stop();
-      confettiValues.forEach((value) => value.stopAnimation());
+      sequence.stop();
+      bounce.stop();
     };
   }, [
+    buttonFade,
+    cardFade,
+    cardSlide,
+    confettiFall,
     confettiItems,
-    confettiValues,
-    fade,
-    quetzalRotate,
-    quetzalScale,
-    quetzalY,
-    scale,
+    confettiOpacity,
+    mascotBounce,
+    mascotPop,
+    titlePop,
   ]);
 
   const handleNext = () => {
-    stop();
+    stopAll();
 
     Animated.sequence([
       Animated.timing(buttonScale, {
@@ -187,53 +198,86 @@ export function CelebrationScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScreenTopActions containerStyle={{ top: insets.top + 8 }} />
-      <Animated.View
-        style={[styles.content, { opacity: fade, transform: [{ scale }] }]}
-      >
-        <View style={styles.confettiRow}>
-          {confettiItems.map((item) => (
-            <Animated.View
-              key={item.id}
-              style={{
-                transform: [{ translateY: confettiValues[item.id] }],
-                left: item.left,
-                position: "absolute",
-                top: 10,
-              }}
-            >
-              <AppText style={styles.confetti}>{item.icon}</AppText>
-            </Animated.View>
-          ))}
-        </View>
 
+      <View style={styles.confettiLayer} pointerEvents="none">
+        {confettiItems.map((item, index) => (
+          <Animated.View
+            key={item.id}
+            style={{
+              position: "absolute",
+              left: `${item.left}%`,
+              top: 0,
+              opacity: confettiOpacity[index],
+              transform: [
+                {
+                  translateY: confettiFall[index].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, item.distance],
+                  }),
+                },
+                {
+                  rotate: confettiFall[index].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: ["0deg", item.rotateTo],
+                  }),
+                },
+              ],
+            }}
+          >
+            <AppText style={[styles.confetti, { color: item.color }]}>
+              {item.icon}
+            </AppText>
+          </Animated.View>
+        ))}
+      </View>
+
+      <View style={styles.content}>
         <Animated.View
           style={{
             transform: [
-              { translateY: quetzalY },
-              { scale: quetzalScale },
+              { translateY: mascotBounce },
               {
-                rotate: quetzalRotate.interpolate({
-                  inputRange: [-2, 2],
-                  outputRange: ["-2deg", "2deg"],
+                scale: mascotPop.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.4, 1],
                 }),
               },
             ],
           }}
         >
-          <QuetzalMascot
-            size={140}
-            style={styles.mascot}
-            speakAudio={celebrationAudio}
-          />
+          <QuetzalMascot size={140} style={styles.mascot} />
         </Animated.View>
-        <AppText variant="title" style={styles.title}>
-          ¡Excelente!
-        </AppText>
-        <AppText style={styles.subtitle}>
-          Una estrella más para tu aventura.
-        </AppText>
 
-        <View style={styles.card}>
+        <Animated.View
+          style={{
+            opacity: titlePop,
+            transform: [
+              {
+                scale: titlePop.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.7, 1],
+                }),
+              },
+            ],
+          }}
+        >
+          <AppText variant="title" style={styles.title}>
+            ¡Sí, lo encontraste!
+          </AppText>
+          <AppText style={styles.subtitle}>
+            Una estrella más para tu aventura.
+          </AppText>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.card,
+            {
+              opacity: cardFade,
+              transform: [{ translateY: cardSlide }],
+            },
+          ]}
+        >
           <Image
             source={
               resolveImageSource(animal.image) as
@@ -245,12 +289,17 @@ export function CelebrationScreen() {
           <AppText variant="subtitle" style={styles.animalName}>
             {animal.name}
           </AppText>
-        </View>
+        </Animated.View>
 
-        <Animated.View style={{ transform: [{ scale: buttonScale }] }}>
+        <Animated.View
+          style={{
+            opacity: buttonFade,
+            transform: [{ scale: buttonScale }],
+          }}
+        >
           <PrimaryButton title="Siguiente" onPress={handleNext} />
         </Animated.View>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -263,18 +312,21 @@ const styles = StyleSheet.create({
     paddingTop: 84,
     paddingBottom: 28,
   },
+  confettiLayer: {
+    position: "absolute",
+    top: 70,
+    left: 0,
+    right: 0,
+    height: 140,
+  },
+  confetti: {
+    fontSize: 26,
+  },
   content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  confettiRow: {
-    height: 44,
-    width: "100%",
-    marginBottom: 4,
-  },
-  confetti: {
-    fontSize: 24,
+    gap: 4,
   },
   mascot: {
     marginVertical: 8,
@@ -282,6 +334,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#1B5E20",
     marginTop: 4,
+    textAlign: "center",
   },
   subtitle: {
     color: "#4E7A4B",

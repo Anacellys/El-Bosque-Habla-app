@@ -5,8 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/AppText";
 import { useAppContext } from "@/context/AppContext";
+import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/app-data";
-import { useAnimalAudio } from "@/services/audio";
 import { getCachedImageUri } from "@/utils/imageCache";
 import { resolveImageSource } from "@/utils/imageSource";
 
@@ -80,13 +80,12 @@ export function AnimalInfoScreen() {
   const { selectedAnimalId } = useAppContext();
   const animal = ANIMALS.find((entry) => entry.id === selectedAnimalId);
   const stats = animal ? ANIMAL_STATS[animal.id] : undefined;
+  const { playSound } = useAudio();
+  const [localImageUri, setLocalImageUri] = useState<string | null>(null);
 
   if (!animal) {
     return null;
   }
-
-  const { playSound } = useAnimalAudio();
-  const [localImageUri, setLocalImageUri] = useState<string | null>(null);
 
   async function handlePlaySound() {
     if (!animal) return;
@@ -154,7 +153,7 @@ export function AnimalInfoScreen() {
         <View style={{ marginTop: 8 }}>
           <Pressable style={styles.playButton} onPress={handlePlaySound}>
             <AppText style={styles.playButtonText}>
-              {playing ? "Detener sonido" : "Escuchar sonido del animal"}
+              Escuchar sonido del animal
             </AppText>
           </Pressable>
         </View>

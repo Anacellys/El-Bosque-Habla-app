@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { AppText } from "./AppText";
@@ -6,7 +7,7 @@ interface PrimaryButtonProps {
   title: string;
   onPress: () => void;
   onLongPress?: () => void;
-  icon?: string;
+  icon?: ReactNode;
   variant?: "primary" | "secondary";
   disabled?: boolean;
 }
@@ -31,11 +32,7 @@ export function PrimaryButton({
         disabled && styles.disabled,
       ]}
     >
-      {icon ? (
-        <View style={styles.iconWrap}>
-          <AppText variant="subtitle">{icon}</AppText>
-        </View>
-      ) : null}
+      {icon ? <View style={styles.iconWrap}>{icon}</View> : null}
       <AppText
         variant="subtitle"
         color={variant === "primary" ? "#FFFFFF" : "#2E7D32"}

@@ -1,36 +1,13 @@
-import { useEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Circle, Ellipse, Path, Rect, Svg } from "react-native-svg";
-
-import { useAnimalAudio } from "@/services/audio";
 
 interface Props {
   size?: number;
   style?: StyleProp<ViewStyle>;
   withHat?: boolean;
-  speakAudio?: string | null;
 }
 
-export function QuetzalMascot({
-  size = 120,
-  style,
-  withHat = true,
-  speakAudio,
-}: Props) {
-  const { playMascotAudio, stop } = useAnimalAudio();
-
-  useEffect(() => {
-    if (!speakAudio) {
-      return;
-    }
-
-    playMascotAudio(speakAudio);
-
-    return () => {
-      stop();
-    };
-  }, [playMascotAudio, speakAudio, stop]);
-
+export function QuetzalMascot({ size = 120, style, withHat = true }: Props) {
   return (
     <Svg width={size} height={size} viewBox="0 0 200 220" style={style}>
       {/* Long tail feathers */}
