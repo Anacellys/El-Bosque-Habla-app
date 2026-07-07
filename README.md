@@ -1,56 +1,83 @@
-# Welcome to your Expo app 👋
+# El Bosque Habla
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+El Bosque Habla es una app educativa y lúdica desarrollada con Expo Router y React Native para acercar a los niños y niñas al conocimiento de la fauna de Panamá. La experiencia combina exploración, audio, juegos y seguimiento de progreso para hacer el aprendizaje más significativo.
 
-## Get started
+## Características principales
 
-1. Install dependencies
+- Exploración interactiva de animales y provincias de Panamá.
+- Pantallas de información con imagen, datos curiosos y ubicación.
+- Reproducción de sonidos y nombres de los animales mediante audio.
+- Mini juego de memoria/sonido para reforzar el aprendizaje.
+- Sistema de descubrimientos, estrellas y puntos persistente con AsyncStorage.
+- Narración opcional habilitable desde la experiencia.
+- Diseño pensado para una experiencia visual amigable y educativa.
 
-   ```bash
-   npm install
-   ```
+## Tecnologías usadas
 
-2. Start the app
+- React Native
+- Expo
+- Expo Router
+- TypeScript
+- React Context
+- AsyncStorage
+- Expo Audio
+- Expo Asset
 
-   ```bash
-   npx expo start
-   ```
+## Estructura del proyecto
 
-In the output, you'll find options to open the app in a
+- src/app: rutas y pantallas principales con Expo Router.
+- src/screens: pantallas de la app organizadas por módulos.
+- src/components: componentes reutilizables de UI.
+- src/context: contexto global de la app y audio.
+- src/data: catálogo de animales y provincias.
+- src/types: tipos TypeScript compartidos.
+- src/utils: utilidades para imágenes y caché.
+- assets: imágenes, sonidos y audios de los animales.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Requisitos
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Node.js 18 o superior
+- npm o yarn
+- Expo CLI
 
-## Get a fresh project
-
-When you're ready, run:
+## Instalación
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Ejecución
 
-### Other setup steps
+```bash
+npx expo start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Luego puedes abrir la app en:
 
-## Learn more
+- Expo Go
+- Emulador Android
+- Simulador iOS
+- Navegador web
 
-To learn more about developing your project with Expo, look at the following resources:
+## Scripts disponibles
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run start
+npm run android
+npm run ios
+npm run web
+npm run lint
+```
 
-## Join the community
+## Estado del proyecto
 
-Join our community of developers creating universal apps.
+La app está en desarrollo activo y cuenta con:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- navegación entre pantallas
+- contenido educativo de animales panameños
+- audio asociado a animales
+- progreso guardado localmente
+
+## Autor
+
+Proyecto desarrollado para promover la educación ambiental y el aprendizaje infantil a través de la tecnología.
