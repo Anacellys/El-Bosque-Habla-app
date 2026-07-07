@@ -1,6 +1,4 @@
-import type { Animal, Province } from "@/types/app";
-
-export const ANIMALS: Animal[] = [
+export const ANIMALS = [
   {
     id: "rana",
     name: "Rana",
@@ -159,7 +157,7 @@ export const ANIMALS: Animal[] = [
   },
 ];
 
-export const PROVINCES: Province[] = [
+export const PROVINCES = [
   {
     id: "bocas-toro",
     name: "Bocas del Toro",
@@ -272,7 +270,7 @@ export const PROVINCES: Province[] = [
   },
 ];
 
-export const QUIZ_OPTIONS: Record<string, string[]> = {
+export const QUIZ_OPTIONS = {
   rana: ["Rana", "Quetzal", "Loro"],
   quetzal: ["Quetzal", "Tucán", "Gato"],
   tucan: ["Tucán", "Ocelote", "Rana"],

@@ -7,36 +7,16 @@ import React, {
     useState,
 } from "react";
 
-import type { ResultState } from "@/types/app";
+const AppContext = createContext(undefined);
 
-interface AppContextValue {
-  discoveries: string[];
-  stars: number;
-  points: number;
-  narrationEnabled: boolean;
-  selectedProvinceId: string | null;
-  selectedAnimalId: string | null;
-  lastResult: ResultState | null;
-  selectProvince: (provinceId: string) => void;
-  selectAnimal: (animalId: string) => void;
-  markDiscovery: (animalId: string) => void;
-  recordResult: (animalId: string, correct: boolean) => void;
-  toggleNarration: () => void;
-  resetProgress: () => void;
-}
-
-const AppContext = createContext<AppContextValue | undefined>(undefined);
-
-export function AppProvider({ children }: { children: React.ReactNode }) {
+export function AppProvider({ children }) {
   // Cargamos el progreso del niño desde almacenamiento local para que las estrellas y el avance persistan.
-  const [discoveries, setDiscoveries] = useState<string[]>([]);
+  const [discoveries, setDiscoveries] = useState([]);
   const [stars, setStars] = useState(0);
   const [narrationEnabled, setNarrationEnabled] = useState(true);
-  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
-    null,
-  );
-  const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<ResultState | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+  const [selectedAnimalId, setSelectedAnimalId] = useState(null);
+  const [lastResult, setLastResult] = useState(null);
 
   useEffect(() => {
     const hydrate = async () => {
@@ -74,17 +54,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem("narrationEnabled", String(narrationEnabled));
   }, [narrationEnabled]);
 
-  const selectProvince = (provinceId: string) =>
-    setSelectedProvinceId(provinceId);
-  const selectAnimal = (animalId: string) => setSelectedAnimalId(animalId);
+  const selectProvince = (provinceId) => setSelectedProvinceId(provinceId);
+  const selectAnimal = (animalId) => setSelectedAnimalId(animalId);
 
-  const markDiscovery = (animalId: string) => {
+  const markDiscovery = (animalId) => {
     setDiscoveries((current) =>
       current.includes(animalId) ? current : [...current, animalId],
     );
   };
 
-  const recordResult = (animalId: string, correct: boolean) => {
+  const recordResult = (animalId, correct) => {
     setSelectedAnimalId(animalId);
     setLastResult({ animalId, correct });
     if (correct) {

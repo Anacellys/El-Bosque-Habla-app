@@ -1,11 +1,4 @@
-import { StyleSheet, Text, type TextProps } from "react-native";
-
-type AppTextVariant = "title" | "subtitle" | "body" | "caption" | "label";
-
-interface AppTextProps extends TextProps {
-  variant?: AppTextVariant;
-  color?: string;
-}
+import { StyleSheet, Text } from "react-native";
 
 export function AppText({
   variant = "body",
@@ -13,7 +6,7 @@ export function AppText({
   style,
   children,
   ...props
-}: AppTextProps) {
+}) {
   return (
     <Text
       style={[

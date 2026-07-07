@@ -1,6 +1,5 @@
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-import type { ImageSourcePropType } from "react-native";
 import { Image, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import {
   SafeAreaView,
@@ -56,11 +55,7 @@ export function ListenScreen() {
         {ANIMALS.map((animal) => (
           <View key={animal.id} style={styles.card}>
             <Image
-              source={
-                resolveImageSource(animal.image) as
-                  | ImageSourcePropType
-                  | undefined
-              }
+              source={resolveImageSource(animal.image)}
               style={styles.image}
             />
             <View style={styles.cardBody}>

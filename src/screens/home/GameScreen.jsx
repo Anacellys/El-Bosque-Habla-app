@@ -1,6 +1,5 @@
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ImageSourcePropType } from "react-native";
 import {
   Animated,
   Image,
@@ -21,10 +20,9 @@ import { useAppContext } from "@/context/AppContext";
 import { useAudio } from "@/context/AudioContext";
 import { ANIMALS } from "@/data/animals";
 import { MASCOT_AUDIO } from "@/data/mascotAudio";
-import type { Animal } from "@/types/app";
 import { resolveImageSource } from "@/utils/imageSource";
 
-function shuffle<T>(values: T[]): T[] {
+function shuffle(values) {
   const copy = [...values];
   for (let index = copy.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
@@ -37,9 +35,9 @@ export function GameScreen() {
   const router = useRouter();
   const { recordResult, narrationEnabled } = useAppContext();
   const { playName, playSequence, stopAll } = useAudio();
-  const [question, setQuestion] = useState<Animal | null>(null);
-  const [options, setOptions] = useState<Animal[]>([]);
-  const [feedback, setFeedback] = useState<"listen" | "retry">("listen");
+  const [question, setQuestion] = useState(null);
+  const [options, setOptions] = useState([]);
+  const [feedback, setFeedback] = useState("listen");
   const bounce = useRef(new Animated.Value(0)).current;
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(12)).current;
@@ -124,7 +122,7 @@ export function GameScreen() {
     ]).start();
   };
 
-  const handleSelect = (animal: Animal) => {
+  const handleSelect = (animal) => {
     if (!question) {
       return;
     }
@@ -180,9 +178,7 @@ export function GameScreen() {
 
           <View style={styles.cardsWrap}>
             {options.map((animal) => {
-              const imageSource = resolveImageSource(animal.image) as
-                | ImageSourcePropType
-                | undefined;
+              const imageSource = resolveImageSource(animal.image);
 
               return (
                 <Animated.View

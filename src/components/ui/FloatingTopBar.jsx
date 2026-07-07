@@ -3,15 +3,10 @@ import { Animated, Pressable, StyleSheet, View } from "react-native";
 
 import { AppText } from "./AppText";
 
-interface FloatingTopBarProps {
-  onHomePress: () => void;
-  onSettingsPress: () => void;
-}
-
 export function FloatingTopBar({
   onHomePress,
   onSettingsPress,
-}: FloatingTopBarProps) {
+}) {
   const homeScale = useRef(new Animated.Value(1)).current;
   const settingsScale = useRef(new Animated.Value(1)).current;
 
@@ -22,7 +17,7 @@ export function FloatingTopBar({
     };
   }, [homeScale, settingsScale]);
 
-  const animatePress = (value: Animated.Value) => {
+  const animatePress = (value) => {
     Animated.sequence([
       Animated.timing(value, {
         toValue: 0.92,

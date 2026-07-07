@@ -1,11 +1,6 @@
 import { Circle, Path, Rect, Svg } from "react-native-svg";
 
-interface IconProps {
-  size?: number;
-  color?: string;
-}
-
-export function PlayIcon({ size = 22, color = "#FFFFFF" }: IconProps) {
+export function PlayIcon({ size = 22, color = "#FFFFFF" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Path d="M6 4 L20 12 L6 20 Z" fill={color} />
@@ -13,7 +8,7 @@ export function PlayIcon({ size = 22, color = "#FFFFFF" }: IconProps) {
   );
 }
 
-export function SpeakerIcon({ size = 22, color = "#2E7D32" }: IconProps) {
+export function SpeakerIcon({ size = 22, color = "#2E7D32" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Path d="M3 9 H7 L13 4 V20 L7 15 H3 Z" fill={color} />
@@ -35,7 +30,7 @@ export function SpeakerIcon({ size = 22, color = "#2E7D32" }: IconProps) {
   );
 }
 
-export function StarIcon({ size = 22, color = "#F9A825" }: IconProps) {
+export function StarIcon({ size = 22, color = "#F9A825" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Path
@@ -46,7 +41,7 @@ export function StarIcon({ size = 22, color = "#F9A825" }: IconProps) {
   );
 }
 
-export function FamilyIcon({ size = 22, color = "#2E7D32" }: IconProps) {
+export function FamilyIcon({ size = 22, color = "#2E7D32" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Circle cx="8" cy="7" r="3" fill={color} />
@@ -64,7 +59,7 @@ export function FamilyIcon({ size = 22, color = "#2E7D32" }: IconProps) {
   );
 }
 
-export function TrophyIcon({ size = 18, color = "#F9A825" }: IconProps) {
+export function TrophyIcon({ size = 18, color = "#F9A825" }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24">
       <Rect x="9" y="15" width="6" height="4" fill={color} />

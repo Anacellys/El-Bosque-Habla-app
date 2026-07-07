@@ -63,31 +63,31 @@ export function HomeScreen() {
         <PrimaryButton
           title="Jugar"
           icon={<PlayIcon size={20} color="#FFFFFF" />}
-          onPress={() => router.push("/game" as never)}
+          onPress={() => router.push("/game")}
         />
         <PrimaryButton
           title="Escuchar animales"
           icon={<SpeakerIcon size={20} />}
           variant="secondary"
-          onPress={() => router.push("/listen" as never)}
+          onPress={() => router.push("/listen")}
         />
         <PrimaryButton
           title="Mis estrellas"
           icon={<StarIcon size={20} />}
           variant="secondary"
-          onPress={() => router.push("/stars" as never)}
+          onPress={() => router.push("/stars")}
         />
         <PrimaryButton
           title="Padres"
           icon={<FamilyIcon size={20} />}
           variant="secondary"
-          onPress={() => router.push("/parents" as never)}
+          onPress={() => router.push("/parents")}
         />
       </View>
 
       <Pressable
         style={styles.parentShortcut}
-        onLongPress={() => router.push("/parents" as never)}
+        onLongPress={() => router.push("/parents")}
       >
         <AppText style={styles.parentShortcutText}>
           Mantén presionado para Padres

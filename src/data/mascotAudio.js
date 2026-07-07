@@ -11,7 +11,7 @@ export const MASCOT_AUDIO = {
   introEscuchar: require("../../assets/audio/mascota/intro-escuchar.mp3"),
   instruccionEscuchar: require("../../assets/audio/mascota/instruccion-escuchar.mp3"),
   introEstrellas: require("../../assets/audio/mascota/intro-estrellas.mp3"),
-} as const;
+};
 
 export function pickCelebrationAudio() {
   const celebrationClips = [

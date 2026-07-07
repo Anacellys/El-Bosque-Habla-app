@@ -1,25 +1,14 @@
 import { useRouter } from "expo-router";
 import { useRef } from "react";
-import {
-    Animated,
-    Pressable,
-    StyleProp,
-    StyleSheet,
-    View,
-    ViewStyle,
-} from "react-native";
+import { Animated, Pressable, StyleSheet, View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 
-interface ScreenTopActionsProps {
-  containerStyle?: StyleProp<ViewStyle>;
-}
-
-export function ScreenTopActions({ containerStyle }: ScreenTopActionsProps) {
+export function ScreenTopActions({ containerStyle }) {
   const router = useRouter();
   const homeScale = useRef(new Animated.Value(1)).current;
   const settingsScale = useRef(new Animated.Value(1)).current;
 
-  const animatePressIn = (value: Animated.Value) => {
+  const animatePressIn = (value) => {
     Animated.spring(value, {
       toValue: 0.94,
       friction: 6,
@@ -28,7 +17,7 @@ export function ScreenTopActions({ containerStyle }: ScreenTopActionsProps) {
     }).start();
   };
 
-  const animatePressOut = (value: Animated.Value) => {
+  const animatePressOut = (value) => {
     Animated.spring(value, {
       toValue: 1,
       friction: 6,
@@ -45,7 +34,7 @@ export function ScreenTopActions({ containerStyle }: ScreenTopActionsProps) {
           style={styles.button}
           onPressIn={() => animatePressIn(homeScale)}
           onPressOut={() => animatePressOut(homeScale)}
-          onPress={() => router.replace("/home" as never)}
+          onPress={() => router.replace("/home")}
         >
           <HomeIcon />
         </Pressable>
@@ -57,7 +46,7 @@ export function ScreenTopActions({ containerStyle }: ScreenTopActionsProps) {
           style={styles.button}
           onPressIn={() => animatePressIn(settingsScale)}
           onPressOut={() => animatePressOut(settingsScale)}
-          onPress={() => router.push("/parents" as never)}
+          onPress={() => router.push("/parents")}
         >
           <SettingsIcon />
         </Pressable>

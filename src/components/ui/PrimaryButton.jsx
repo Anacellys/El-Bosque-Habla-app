@@ -1,16 +1,6 @@
-import type { ReactNode } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
 import { AppText } from "./AppText";
-
-interface PrimaryButtonProps {
-  title: string;
-  onPress: () => void;
-  onLongPress?: () => void;
-  icon?: ReactNode;
-  variant?: "primary" | "secondary";
-  disabled?: boolean;
-}
 
 export function PrimaryButton({
   title,
@@ -19,7 +9,7 @@ export function PrimaryButton({
   icon,
   variant = "primary",
   disabled,
-}: PrimaryButtonProps) {
+}) {
   return (
     <Pressable
       onPress={onPress}

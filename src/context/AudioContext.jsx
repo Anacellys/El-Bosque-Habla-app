@@ -1,25 +1,7 @@
 import { useAudioPlayer } from "expo-audio";
 import React, { createContext, useCallback, useContext, useRef } from "react";
 
-import type { Animal } from "@/types/app";
-
-type AudioSource = string | number | null | undefined;
-
-interface AudioContextValue {
-  playSound: (animal: Animal) => void;
-  playName: (animal: Animal) => void;
-  playMascotAudio: (source: AudioSource) => void;
-  stopAll: () => void;
-  /**
-   * Reproduce una lista de audios EN ORDEN, esperando a que cada uno
-   * termine de sonar antes de empezar el siguiente. Así se evita que
-   * la voz de la mascota, el nombre del animal y su sonido real se
-   * encimen unos con otros.
-   */
-  playSequence: (sources: AudioSource[]) => void;
-}
-
-const AudioCtx = createContext<AudioContextValue | undefined>(undefined);
+const AudioCtx = createContext(undefined);
 
 // Tiempo máximo que esperamos por un clip antes de continuar de todas formas.
 // Es una red de seguridad: en Android hay casos donde el evento "terminó de
@@ -27,7 +9,7 @@ const AudioCtx = createContext<AudioContextValue | undefined>(undefined);
 // esperando para siempre (el "bucle" congelado que se ve a veces).
 const MAX_WAIT_MS = 12000;
 
-export function AudioProvider({ children }: { children: React.ReactNode }) {
+export function AudioProvider({ children }) {
   // Un solo reproductor compartido por toda la app. Es intencional: como
   // playSequence garantiza que nunca hay dos audios sonando a la vez, no
   // hace falta (ni conviene) tener varios reproductores independientes.
@@ -49,16 +31,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   // Reproduce un solo clip y resuelve la promesa cuando termina
   // (o cuando se agota el tiempo máximo de espera).
   const playAndWait = useCallback(
-    (source: AudioSource) =>
-      new Promise<void>((resolve) => {
+    (source) =>
+      new Promise((resolve) => {
         if (!source) {
           resolve();
           return;
         }
 
         let settled = false;
-        let subscription: { remove: () => void } | undefined;
-        let safetyTimer: ReturnType<typeof setTimeout>;
+        let subscription;
+        let safetyTimer;
 
         const finish = () => {
           if (settled) {
@@ -92,7 +74,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   );
 
   const playSequence = useCallback(
-    (sources: AudioSource[]) => {
+    (sources) => {
       const myId = ++sequenceIdRef.current;
 
       const run = async () => {
@@ -112,21 +94,21 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   );
 
   const playSound = useCallback(
-    (animal: Animal) => {
+    (animal) => {
       playSequence([animal.soundUrl ?? animal.soundAsset ?? null]);
     },
     [playSequence],
   );
 
   const playName = useCallback(
-    (animal: Animal) => {
+    (animal) => {
       playSequence([animal.nameAudioUrl ?? animal.nameAudioAsset ?? null]);
     },
     [playSequence],
   );
 
   const playMascotAudio = useCallback(
-    (source: AudioSource) => {
+    (source) => {
       playSequence([source]);
     },
     [playSequence],
@@ -148,3 +130,4 @@ export function useAudio() {
   }
   return context;
 }
+

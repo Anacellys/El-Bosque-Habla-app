@@ -1,6 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef } from "react";
-import type { ImageSourcePropType } from "react-native";
 import { Animated, Easing, Image, StyleSheet, View } from "react-native";
 import {
   SafeAreaView,
@@ -23,7 +22,7 @@ const CONFETTI_COUNT = 14;
 
 export function CelebrationScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ animalId?: string }>();
+  const params = useLocalSearchParams();
   const { narrationEnabled } = useAppContext();
   const { playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
@@ -279,11 +278,7 @@ export function CelebrationScreen() {
           ]}
         >
           <Image
-            source={
-              resolveImageSource(animal.image) as
-                | ImageSourcePropType
-                | undefined
-            }
+            source={resolveImageSource(animal.image)}
             style={styles.image}
           />
           <AppText variant="subtitle" style={styles.animalName}>

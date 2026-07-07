@@ -1,13 +1,6 @@
-import { StyleProp, ViewStyle } from "react-native";
 import { Circle, Ellipse, Path, Rect, Svg } from "react-native-svg";
 
-interface Props {
-  size?: number;
-  style?: StyleProp<ViewStyle>;
-  withHat?: boolean;
-}
-
-export function QuetzalMascot({ size = 120, style, withHat = true }: Props) {
+export function QuetzalMascot({ size = 120, style, withHat = true }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 200 220" style={style}>
       {/* Long tail feathers */}
