@@ -18,11 +18,13 @@ import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
 import { useAudio } from "@/context/AudioContext";
-import { ANIMALS } from "@/data/animals";
+import { ANIMALS, PROVINCES } from "@/data/animals";
+
 import { MASCOT_AUDIO } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
 
 function shuffle(values) {
+
   const copy = [...values];
   for (let index = copy.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
@@ -35,28 +37,104 @@ export function GameScreen() {
   const router = useRouter();
   const { recordResult, narrationEnabled } = useAppContext();
   const { playName, playSequence, stopAll } = useAudio();
-  const [question, setQuestion] = useState(null);
-  const [options, setOptions] = useState([]);
-  const [feedback, setFeedback] = useState("listen");
+
   const bounce = useRef(new Animated.Value(0)).current;
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(12)).current;
   const retryAudioIndex = useRef(0);
+
   const insets = useSafeAreaInsets();
 
-  const buildQuestion = () => {
-    const correct = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
-    const distractors = shuffle(
-      ANIMALS.filter((animal) => animal.id !== correct.id),
-    ).slice(0, 1);
-    setQuestion(correct);
-    setOptions(shuffle([correct, ...distractors]));
+  // Sesión local (no se guarda en AppContext, porque el task actual exige
+  // evitar repetir en esta sesión; si quieres persistencia entre pantallas
+  // luego lo conectamos a contexto).
+  const [sessionProvinceOrder, setSessionProvinceOrder] = useState([]); // array de province ids
+  const [currentProvinceIndex, setCurrentProvinceIndex] = useState(0);
+
+  const [correctAnimalId, setCorrectAnimalId] = useState(null);
+  const [answerOptions, setAnswerOptions] = useState([]); // array de 2 animal objects
+
+  const [feedback, setFeedback] = useState("listen");
+
+  const currentProvince =
+    sessionProvinceOrder.length > 0
+      ? PROVINCES.find((p) => p.id === sessionProvinceOrder[currentProvinceIndex]) ?? null
+      : null;
+
+  const totalProvinces = PROVINCES.length;
+  const isLastProvince = currentProvinceIndex === totalProvinces - 1;
+
+  const question = useMemo(() => {
+    if (!correctAnimalId) return null;
+    return ANIMALS.find((a) => a.id === correctAnimalId) ?? null;
+  }, [correctAnimalId]);
+
+
+
+  const buildProvinceRound = (province) => {
+    const ids = province.animals || [];
+    if (ids.length < 2) {
+      return;
+    }
+
+    const chosenCorrectId = ids[Math.floor(Math.random() * ids.length)];
+    const correctAnimal = ANIMALS.find((a) => a.id === chosenCorrectId) ?? null;
+    const optionAnimal = ANIMALS.find((a) => a.id !== chosenCorrectId && ids.includes(a.id)) ?? null;
+
+    const twoAnimals = [correctAnimal, optionAnimal].filter(Boolean);
+    const randomized = shuffle(twoAnimals);
+
+    setCorrectAnimalId(chosenCorrectId);
+    setAnswerOptions(randomized);
+    setFeedback("listen");
+
+    // audio: reproducir sonido real del animal correcto (si no hay asset, se salta)
+    if (correctAnimal) {
+      playSequence([
+        narrationEnabled ? MASCOT_AUDIO.instruccionJuego : null,
+        narrationEnabled ? MASCOT_AUDIO.preguntaSonido : null,
+        correctAnimal.soundUrl ?? correctAnimal.soundAsset ?? null,
+      ]);
+    }
+  };
+
+  const startSession = () => {
+    const order = shuffle(PROVINCES.map((p) => p.id));
+    setSessionProvinceOrder(order);
+    setCurrentProvinceIndex(0);
     setFeedback("listen");
   };
 
   useEffect(() => {
-    buildQuestion();
+    Animated.parallel([
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 280,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slide, {
+        toValue: 0,
+        duration: 280,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    startSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!sessionProvinceOrder.length) {
+      return;
+    }
+    const provinceId = sessionProvinceOrder[currentProvinceIndex];
+    const province = PROVINCES.find((p) => p.id === provinceId) ?? null;
+    if (!province) {
+      return;
+    }
+    buildProvinceRound(province);
+  }, [currentProvinceIndex, sessionProvinceOrder, narrationEnabled]);
+
 
   useEffect(() => {
     Animated.parallel([
@@ -129,9 +207,16 @@ export function GameScreen() {
 
     if (animal.id === question.id) {
       recordResult(question.id, true);
+
+      // Si esta era la última provincia de la sesión, vamos al cierre.
+      // Para eso, GameScreen va a pasar un param "end" cuando corresponda.
       router.push({
         pathname: "/celebration",
-        params: { animalId: question.id },
+        params: {
+          animalId: question.id,
+          mode: question?.meta?.mode ?? "continue",
+          end: question?.meta?.end ?? false,
+        },
       });
       return;
     }

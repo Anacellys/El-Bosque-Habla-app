@@ -16,6 +16,25 @@ export const ANIMALS = [
   },
 
   {
+    id: "perezoso",
+    name: "Perezoso",
+    emoji: "🦥",
+    color: "#6A1B9A",
+    province: "Bocas del Toro",
+    provinceId: "bocas-toro",
+    fact: "El perezoso de tres dedos se mueve lento entre la vegetación de Bocas del Toro.",
+    sound: "Voz del perezoso",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/BocasToro/Perezoso Pigmeo de tres dedos.jpg
+    // TODO ASSET: assets/sounds/BocasToro/Perezoso...mp3
+    // TODO ASSET: assets/audio/nombres/perezoso.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Selva y manglares",
+  },
+
+  {
     id: "quetzal",
     name: "Quetzal",
     emoji: "🦚",
@@ -29,6 +48,25 @@ export const ANIMALS = [
     soundAsset: require("../../assets/sounds/Chiriqui/XC274688 - Quetzal guatemalteco - Pharomachrus mocinno.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/Quetzal.mp3"),
     habitat: "Bosque nuboso",
+  },
+
+  {
+    id: "mono",
+    name: "Mono",
+    emoji: "🐒",
+    color: "#2E7D32",
+    province: "Chiriquí",
+    provinceId: "chiriqui",
+    fact: "El mono ardilla vive entre las ramas y las montañas de Chiriquí.",
+    sound: "Voz del mono",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Chiriqui/Mono ardilla de Chiriquí.jpg
+    // TODO ASSET: assets/sounds/Chiriqui/Mono...mp3
+    // TODO ASSET: assets/audio/nombres/mono.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Bosque alto",
   },
 
   {
@@ -48,6 +86,25 @@ export const ANIMALS = [
   },
 
   {
+    id: "tortuga",
+    name: "Tortuga",
+    emoji: "🐢",
+    color: "#1565C0",
+    province: "Colón",
+    provinceId: "colon",
+    fact: "La tortuga carey viaja entre costas y playas en la región de Colón.",
+    sound: "Sonido de tortuga",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Colon/Tortuga carey.jpg
+    // TODO ASSET: assets/sounds/Colon/Tortuga...mp3
+    // TODO ASSET: assets/audio/nombres/tortuga.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Playas y arrecifes",
+  },
+
+  {
     id: "loro",
     name: "Loro",
     emoji: "🦜",
@@ -61,6 +118,25 @@ export const ANIMALS = [
     soundAsset: require("../../assets/sounds/Herrera/XC454080 - Amazona frentirroja - Amazona autumnalis.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/loroFrentiRojo.mp3"),
     habitat: "Bosque seco",
+  },
+
+  {
+    id: "iguana",
+    name: "Iguana",
+    emoji: "🦎",
+    color: "#C62828",
+    province: "Herrera",
+    provinceId: "herrera",
+    fact: "La iguana verde se asolea y se mueve entre ramas y rocas en Herrera.",
+    sound: "Sonido de iguana",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Herrera/Iguana verde.jpg
+    // TODO ASSET: assets/sounds/Herrera/Iguana...mp3
+    // TODO ASSET: assets/audio/nombres/iguana.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Rocas y bosque seco",
   },
 
   {
@@ -80,6 +156,25 @@ export const ANIMALS = [
   },
 
   {
+    id: "neque",
+    name: "Ñeque",
+    emoji: "🐾",
+    color: "#37474F",
+    province: "Panamá",
+    provinceId: "panama",
+    fact: "El ñeque es un animal pequeño que se mueve en la selva urbana de Panamá.",
+    sound: "Sonido del ñeque",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Panama/Ñeque.jpg
+    // TODO ASSET: assets/sounds/Panama/Neque...mp3
+    // TODO ASSET: assets/audio/nombres/neque.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Selva urbana",
+  },
+
+  {
     id: "ocelote",
     name: "Ocelote",
     emoji: "🐆",
@@ -93,6 +188,25 @@ export const ANIMALS = [
     soundAsset: require("../../assets/sounds/panama-oeste/Ocelot Sound Effects.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/ocelote.mp3"),
     habitat: "Bosque húmedo",
+  },
+
+  {
+    id: "pava",
+    name: "Pava",
+    emoji: "🪶",
+    color: "#558B2F",
+    province: "Panamá Oeste",
+    provinceId: "panama-oeste",
+    fact: "La pava cusinga se escucha cerca de los bosques y ríos de Panamá Oeste.",
+    sound: "Canto de pava",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/panama-oeste/Pava cusinga.jpg
+    // TODO ASSET: assets/sounds/panama-oeste/Pava...mp3
+    // TODO ASSET: assets/audio/nombres/pava.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Bosques y ríos",
   },
 
   {
@@ -110,6 +224,26 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/Colibri.mp3"),
     habitat: "Bosque montañoso",
   },
+
+  {
+    id: "rana_dorada",
+    name: "Rana dorada",
+    emoji: "🟡",
+    color: "#00897B",
+    province: "Coclé",
+    provinceId: "cocle",
+    fact: "La rana dorada vive en bosques húmedos de Coclé.",
+    sound: "Sonido de rana dorada",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Cocle/Rana dorada de Panamá.jpg
+    // TODO ASSET: assets/sounds/Cocle/Rana dorada...mp3
+    // TODO ASSET: assets/audio/nombres/rana_dorada.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Bosque húmedo",
+  },
+
   {
     id: "ballena",
     name: "Ballena",
@@ -125,6 +259,26 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/ballenaJ.mp3"),
     habitat: "Costa del Pacífico",
   },
+
+  {
+    id: "mono_arana",
+    name: "Araña",
+    emoji: "🕷️",
+    color: "#0277BD",
+    province: "Los Santos",
+    provinceId: "los-santos",
+    fact: "El mono araña vive cerca de los bosques de Los Santos.",
+    sound: "Sonido del mono araña",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Los Santos/Mono araña de Azuero.jpg
+    // TODO ASSET: assets/sounds/los-santos/Mono arana...mp3
+    // TODO ASSET: assets/audio/nombres/mono_aranya.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Bosque tropical",
+  },
+
   {
     id: "paloma",
     name: "Paloma",
@@ -140,6 +294,26 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/palomaDeCoiba.mp3"),
     habitat: "Isla y bosque húmedo",
   },
+
+  {
+    id: "guacamaya",
+    name: "Guacamaya",
+    emoji: "🦜",
+    color: "#8D6E63",
+    province: "Veraguas",
+    provinceId: "veraguas",
+    fact: "La guacamaya roja vuela entre los bosques de Veraguas.",
+    sound: "Sonido de guacamaya",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Veraguas/Guacamaya roja.jpg
+    // TODO ASSET: assets/sounds/Veraguas/Guacamaya...mp3
+    // TODO ASSET: assets/audio/nombres/guacamaya.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Bosque tropical",
+  },
+
   {
     id: "aguila",
     name: "Águila",
@@ -155,7 +329,27 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/águilaH.mp3"),
     habitat: "Selva tropical",
   },
+
+  {
+    id: "jaguar",
+    name: "Jaguar",
+    emoji: "🐆",
+    color: "#37474F",
+    province: "Darién",
+    provinceId: "darien",
+    fact: "El jaguar se mueve con sigilo por la selva del Darién.",
+    sound: "Sonido del jaguar",
+    discovered: false,
+    // TODO ASSET: assets/images/animals/Darien/Jaguar.JPG
+    // TODO ASSET: assets/sounds/Darien/Jaguar...mp3
+    // TODO ASSET: assets/audio/nombres/jaguar.mp3
+    image: null,
+    soundAsset: null,
+    nameAudioAsset: null,
+    habitat: "Selva tropical",
+  },
 ];
+
 
 export const PROVINCES = [
   {
@@ -165,7 +359,7 @@ export const PROVINCES = [
     color: "#388E3C",
     bgColor: "#E8F5E9",
     region: "Caribe panameño",
-    animals: ["rana"],
+    animals: ["rana", "perezoso"],
     x: 20,
     y: 40,
   },
@@ -176,7 +370,9 @@ export const PROVINCES = [
     color: "#2E7D32",
     bgColor: "#E8F5E9",
     region: "Montañas occidentales",
-    animals: ["quetzal"],
+    animals: ["quetzal", "mono"],
+    // nota: los 2 ids por provincia deben ser exactamente 2; actualizar si tu agente asigna ids distintos
+
     x: 10,
     y: 52,
   },

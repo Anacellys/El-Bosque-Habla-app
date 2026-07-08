@@ -16,6 +16,7 @@ import { ANIMALS } from "@/data/animals";
 import { pickCelebrationAudio } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
 
+
 const CONFETTI_COLORS = ["#FFD54F", "#66BB6A", "#4FC3F7", "#FF8A65", "#BA68C8"];
 const CONFETTI_ICONS = ["✦", "⭐", "✿", "●"];
 const CONFETTI_COUNT = 14;
@@ -180,6 +181,10 @@ export function CelebrationScreen() {
   const handleNext = () => {
     stopAll();
 
+    // Si viene como "continue", volvemos a /game preservando la sesión.
+    // (GameScreen decide si avanza o reinicia según la sesión almacenada en AppContext.)
+    const target = "/game";
+
     Animated.sequence([
       Animated.timing(buttonScale, {
         toValue: 0.96,
@@ -191,7 +196,7 @@ export function CelebrationScreen() {
         duration: 100,
         useNativeDriver: true,
       }),
-    ]).start(() => router.replace("/game"));
+    ]).start(() => router.replace(target));
   };
 
   return (

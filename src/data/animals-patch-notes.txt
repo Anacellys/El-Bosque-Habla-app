@@ -1,0 +1,23 @@
+NOTAS
+
+Este archivo se dejó como recordatorio interno.
+
+Requisitos del task:
+- PROVINCES.animals: pasar de [id] a [id1,id2]
+- ANIMALS: agregar 10 animales nuevos (total 20) y para cada nuevo animal:
+  - image: null
+  - soundAsset: null
+  - nameAudioAsset: null
+  - agregar comentario // TODO ASSET: con ruta/archivo esperado
+- Animaciones/juego:
+  - GameScreen debe usar orden aleatorio de 10 provincias por sesión
+  - elegir 1 animal correcto de los 2 de esa provincia
+  - 2 botones con nombres (orden aleatorio)
+  - en fallo repetir misma provincia/mismo animal, alternando mascota audio de error
+  - al completar 10 provincias mostrar cierre final
+- Tolerancia null:
+  - components con Image y audio deben manejar assets null sin crashear
+  - resolveImageSource/uso de Image debe dar placeholder
+
+En el repo actual, src/data/animals.js todavía está en formato viejo (10 animales, 1 por provincia), por eso no se puede completar el refactor sin que se actualice ese archivo.
+

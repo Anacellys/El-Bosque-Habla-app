@@ -25,7 +25,6 @@ module.exports = {
       favicon: "./assets/images/favicon.png",
     },
     plugins: [
-      "expo-router",
       [
         "expo-splash-screen",
         {
@@ -49,7 +48,6 @@ module.exports = {
       reactCompiler: true,
     },
     extra: {
-      router: {},
       eas: {
         projectId: "8150294b-b287-41dd-ae0f-a1237ce7b987",
       },

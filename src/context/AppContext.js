@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
 } from "react";
 
 const AppContext = createContext(undefined);
@@ -87,6 +87,24 @@ export function AppProvider({ children }) {
     await AsyncStorage.setItem("narrationEnabled", "true");
   };
 
+  const [gameSession, setGameSession] = useState(null);
+
+  const startNewSession = () => {
+    setGameSession({
+      provinceOrderIds: [],
+      currentProvinceIndex: 0,
+      correctAnimalId: null,
+      completedProvinceIds: [],
+      // meta para repetir el mismo animal/sonido ante error
+      roundAnimalId: null,
+      roundProvinceId: null,
+    });
+  };
+
+  const resetSession = () => {
+    setGameSession(null);
+  };
+
   const value = useMemo(
     () => ({
       discoveries,
@@ -102,6 +120,10 @@ export function AppProvider({ children }) {
       recordResult,
       toggleNarration,
       resetProgress,
+      gameSession,
+      startNewSession,
+      resetSession,
+      setGameSession,
     }),
     [
       discoveries,
@@ -110,6 +132,7 @@ export function AppProvider({ children }) {
       selectedAnimalId,
       stars,
       lastResult,
+      gameSession,
     ],
   );
 
