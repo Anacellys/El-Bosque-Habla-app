@@ -1,7 +1,7 @@
 export const ANIMALS = [
   {
     id: "rana",
-    name: "Rana",
+    name: "Rana Dardo de Fresa",
     emoji: "🐸",
     color: "#2E7D32",
     province: "Bocas del Toro",
@@ -14,10 +14,9 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/ranaDardoFresa.mp3"),
     habitat: "Bosque tropical",
   },
-
   {
     id: "perezoso",
-    name: "Perezoso",
+    name: "Perezoso Pigmeo de tres dedos",
     emoji: "🦥",
     color: "#6A1B9A",
     province: "Bocas del Toro",
@@ -25,15 +24,11 @@ export const ANIMALS = [
     fact: "El perezoso de tres dedos se mueve lento entre la vegetación de Bocas del Toro.",
     sound: "Voz del perezoso",
     discovered: false,
-    // TODO ASSET: assets/images/animals/BocasToro/Perezoso Pigmeo de tres dedos.jpg
-    // TODO ASSET: assets/sounds/BocasToro/Perezoso...mp3
-    // TODO ASSET: assets/audio/nombres/perezoso.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/BocasToro/Perezoso Pigmeo de tres dedos.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/BocasToro/Perezoso...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Perezoso Pigmeo de tres dedos.mp3"),
     habitat: "Selva y manglares",
   },
-
   {
     id: "quetzal",
     name: "Quetzal",
@@ -46,13 +41,12 @@ export const ANIMALS = [
     discovered: false,
     image: require("../../assets/images/animals/Chiriqui/Quetzal resplandeciente.jpg"),
     soundAsset: require("../../assets/sounds/Chiriqui/XC274688 - Quetzal guatemalteco - Pharomachrus mocinno.mp3"),
-    nameAudioAsset: require("../../assets/audio/nombres/Quetzal.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Quetzal resplandeciente.mp3"),
     habitat: "Bosque nuboso",
   },
-
   {
     id: "mono",
-    name: "Mono",
+    name: "Mono ardilla de Chiriquí",
     emoji: "🐒",
     color: "#2E7D32",
     province: "Chiriquí",
@@ -60,18 +54,14 @@ export const ANIMALS = [
     fact: "El mono ardilla vive entre las ramas y las montañas de Chiriquí.",
     sound: "Voz del mono",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Chiriqui/Mono ardilla de Chiriquí.jpg
-    // TODO ASSET: assets/sounds/Chiriqui/Mono...mp3
-    // TODO ASSET: assets/audio/nombres/mono.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Chiriqui/Mono ardilla de Chiriquí.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Chiriqui/Mono...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Mono ardilla de Chiriquí.mp3"),
     habitat: "Bosque alto",
   },
-
   {
     id: "tucan",
-    name: "Tucán",
+    name: "Tucán Pico Iris",
     emoji: "🦜",
     color: "#F57C00",
     province: "Colón",
@@ -81,32 +71,27 @@ export const ANIMALS = [
     discovered: false,
     image: require("../../assets/images/animals/Colon/Tucán pico iris.png"),
     soundAsset: require("../../assets/sounds/Colon/XC454095 - Tucán piquiverde - Ramphastos sulfuratus brevicarinatus.mp3"),
-    nameAudioAsset: require("../../assets/audio/nombres/Tucan.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Tucán pico iris.mp3"),
     habitat: "Selva tropical",
   },
-
   {
     id: "tortuga",
-    name: "Tortuga",
+    name: "Tortuga carey",
     emoji: "🐢",
-    color: "#1565C0",
+    color: "#15c04b",
     province: "Colón",
     provinceId: "colon",
     fact: "La tortuga carey viaja entre costas y playas en la región de Colón.",
     sound: "Sonido de tortuga",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Colon/Tortuga carey.jpg
-    // TODO ASSET: assets/sounds/Colon/Tortuga...mp3
-    // TODO ASSET: assets/audio/nombres/tortuga.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Colon/Tortuga carey.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Colon/Tortuga...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Tortuga carey.mp3"),
     habitat: "Playas y arrecifes",
   },
-
   {
     id: "loro",
-    name: "Loro",
+    name: "Loro frentirrojo",
     emoji: "🦜",
     color: "#C62828",
     province: "Herrera",
@@ -119,10 +104,9 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/loroFrentiRojo.mp3"),
     habitat: "Bosque seco",
   },
-
   {
     id: "iguana",
-    name: "Iguana",
+    name: "Iguana verde",
     emoji: "🦎",
     color: "#C62828",
     province: "Herrera",
@@ -130,18 +114,14 @@ export const ANIMALS = [
     fact: "La iguana verde se asolea y se mueve entre ramas y rocas en Herrera.",
     sound: "Sonido de iguana",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Herrera/Iguana verde.jpg
-    // TODO ASSET: assets/sounds/Herrera/Iguana...mp3
-    // TODO ASSET: assets/audio/nombres/iguana.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Herrera/Iguana verde.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Herrera/Iguana...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Iguana verde.mp3"),
     habitat: "Rocas y bosque seco",
   },
-
   {
     id: "gato",
-    name: "Gato",
+    name: "Gato solo",
     emoji: "🐱",
     color: "#5D4037",
     province: "Panamá",
@@ -154,7 +134,6 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/gatoSolo.mp3"),
     habitat: "Bosque tropical",
   },
-
   {
     id: "neque",
     name: "Ñeque",
@@ -165,15 +144,11 @@ export const ANIMALS = [
     fact: "El ñeque es un animal pequeño que se mueve en la selva urbana de Panamá.",
     sound: "Sonido del ñeque",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Panama/Ñeque.jpg
-    // TODO ASSET: assets/sounds/Panama/Neque...mp3
-    // TODO ASSET: assets/audio/nombres/neque.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Panama/Ñeque.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Panama/Neque...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Ñeque.mp3"),
     habitat: "Selva urbana",
   },
-
   {
     id: "ocelote",
     name: "Ocelote",
@@ -184,34 +159,29 @@ export const ANIMALS = [
     fact: "El ocelote es un felino ágil que se mueve silencioso por Panamá Oeste.",
     sound: "Grito del ocelote",
     discovered: false,
-    image: require("../../assets/images/animals/panama-oeste/Ocelote.jpg"),
+    image: require("../../assets/images/animals/Panamá Oeste/Ocelote.jpg"),
     soundAsset: require("../../assets/sounds/panama-oeste/Ocelot Sound Effects.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/ocelote.mp3"),
     habitat: "Bosque húmedo",
   },
-
   {
     id: "pava",
-    name: "Pava",
-    emoji: "🪶",
+    name: "Pava cusinga",
+    emoji: "🦃",
     color: "#558B2F",
     province: "Panamá Oeste",
     provinceId: "panama-oeste",
     fact: "La pava cusinga se escucha cerca de los bosques y ríos de Panamá Oeste.",
     sound: "Canto de pava",
     discovered: false,
-    // TODO ASSET: assets/images/animals/panama-oeste/Pava cusinga.jpg
-    // TODO ASSET: assets/sounds/panama-oeste/Pava...mp3
-    // TODO ASSET: assets/audio/nombres/pava.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Panamá Oeste/Pava cusinga.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/panama-oeste/Pava...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Pava cusinga.mp3"),
     habitat: "Bosques y ríos",
   },
-
   {
     id: "colibri",
-    name: "Colibrí",
+    name: "Colibrí de El Valle de Antón",
     emoji: "🐦",
     color: "#00897B",
     province: "Coclé",
@@ -221,10 +191,9 @@ export const ANIMALS = [
     discovered: false,
     image: require("../../assets/images/animals/Cocle/Colibrí de El Valle de Anton.jpg"),
     soundAsset: require("../../assets/sounds/Cocle/XC297549 - Colibrí luminoso - Calothorax lucifer.mp3"),
-    nameAudioAsset: require("../../assets/audio/nombres/Colibri.mp3"),
+    nameAudioAsset: require("../../assets/audio/nombres/Colibrí de El Valle de Antón.mp3"),
     habitat: "Bosque montañoso",
   },
-
   {
     id: "rana_dorada",
     name: "Rana dorada",
@@ -235,53 +204,44 @@ export const ANIMALS = [
     fact: "La rana dorada vive en bosques húmedos de Coclé.",
     sound: "Sonido de rana dorada",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Cocle/Rana dorada de Panamá.jpg
-    // TODO ASSET: assets/sounds/Cocle/Rana dorada...mp3
-    // TODO ASSET: assets/audio/nombres/rana_dorada.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Cocle/Rana dorada de Panamá.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Cocle/Rana dorada...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Rana dorada de Panamá.mp3"),
     habitat: "Bosque húmedo",
   },
-
   {
     id: "ballena",
-    name: "Ballena",
-    emoji: "🐳",
+    name: "Ballena jorobada",
+    emoji: "🐋",
     color: "#0277BD",
     province: "Los Santos",
     provinceId: "los-santos",
     fact: "La ballena jorobada visita las costas de Los Santos para tener a sus crías.",
     sound: "Canto de la ballena",
     discovered: false,
-    image: require("../../assets/images/animals/los-santos/ballena-jorobada.jpg"),
+    image: require("../../assets/images/animals/Los Santos/Ballena jorobada.jpg"),
     soundAsset: require("../../assets/sounds/los-santos/ballena.mp3"),
     nameAudioAsset: require("../../assets/audio/nombres/ballenaJ.mp3"),
     habitat: "Costa del Pacífico",
   },
-
   {
     id: "mono_arana",
-    name: "Araña",
-    emoji: "🕷️",
+    name: "Mono araña de Azuero",
+    emoji: "🐒",
     color: "#0277BD",
     province: "Los Santos",
     provinceId: "los-santos",
     fact: "El mono araña vive cerca de los bosques de Los Santos.",
     sound: "Sonido del mono araña",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Los Santos/Mono araña de Azuero.jpg
-    // TODO ASSET: assets/sounds/los-santos/Mono arana...mp3
-    // TODO ASSET: assets/audio/nombres/mono_aranya.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Los Santos/Mono araña de Azuero.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/los-santos/Mono arana.mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Mono araña de Azuero.mp3"),
     habitat: "Bosque tropical",
   },
-
   {
     id: "paloma",
-    name: "Paloma",
+    name: "Paloma de Coiba",
     emoji: "🕊️",
     color: "#8D6E63",
     province: "Veraguas",
@@ -294,10 +254,9 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/palomaDeCoiba.mp3"),
     habitat: "Isla y bosque húmedo",
   },
-
   {
     id: "guacamaya",
-    name: "Guacamaya",
+    name: "Guacamaya roja",
     emoji: "🦜",
     color: "#8D6E63",
     province: "Veraguas",
@@ -305,18 +264,14 @@ export const ANIMALS = [
     fact: "La guacamaya roja vuela entre los bosques de Veraguas.",
     sound: "Sonido de guacamaya",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Veraguas/Guacamaya roja.jpg
-    // TODO ASSET: assets/sounds/Veraguas/Guacamaya...mp3
-    // TODO ASSET: assets/audio/nombres/guacamaya.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Veraguas/Guacamaya roja.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Veraguas/Guacamaya...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Guacamaya roja.mp3"),
     habitat: "Bosque tropical",
   },
-
   {
     id: "aguila",
-    name: "Águila",
+    name: "Águila Arpía",
     emoji: "🦅",
     color: "#37474F",
     province: "Darién",
@@ -329,7 +284,6 @@ export const ANIMALS = [
     nameAudioAsset: require("../../assets/audio/nombres/águilaH.mp3"),
     habitat: "Selva tropical",
   },
-
   {
     id: "jaguar",
     name: "Jaguar",
@@ -340,16 +294,12 @@ export const ANIMALS = [
     fact: "El jaguar se mueve con sigilo por la selva del Darién.",
     sound: "Sonido del jaguar",
     discovered: false,
-    // TODO ASSET: assets/images/animals/Darien/Jaguar.JPG
-    // TODO ASSET: assets/sounds/Darien/Jaguar...mp3
-    // TODO ASSET: assets/audio/nombres/jaguar.mp3
-    image: null,
-    soundAsset: null,
-    nameAudioAsset: null,
+    image: require("../../assets/images/animals/Darien/Jaguar.jpg"),
+    soundAsset: null, // TODO ASSET: assets/sounds/Darien/Jaguar...mp3
+    nameAudioAsset: require("../../assets/audio/nombres/Jaguar.mp3"),
     habitat: "Selva tropical",
   },
 ];
-
 
 export const PROVINCES = [
   {
@@ -366,13 +316,11 @@ export const PROVINCES = [
   {
     id: "chiriqui",
     name: "Chiriquí",
-    emoji: "🌄",
-    color: "#2E7D32",
-    bgColor: "#E8F5E9",
+    emoji: "🏔️",
+    color: "#b31010",
+    bgColor: "#2fbb3a",
     region: "Montañas occidentales",
     animals: ["quetzal", "mono"],
-    // nota: los 2 ids por provincia deben ser exactamente 2; actualizar si tu agente asigna ids distintos
-
     x: 10,
     y: 52,
   },
@@ -383,7 +331,7 @@ export const PROVINCES = [
     color: "#1565C0",
     bgColor: "#E3F2FD",
     region: "Costa caribeña",
-    animals: ["tucan"],
+    animals: ["tucan", "tortuga"],
     x: 72,
     y: 28,
   },
@@ -391,10 +339,10 @@ export const PROVINCES = [
     id: "herrera",
     name: "Herrera",
     emoji: "🦜",
-    color: "#C62828",
-    bgColor: "#FFEBEE",
+    color: "#1b07b1",
+    bgColor: "#bfcb12",
     region: "Llanuras centrales",
-    animals: ["loro"],
+    animals: ["loro", "iguana"],
     x: 46,
     y: 62,
   },
@@ -402,10 +350,10 @@ export const PROVINCES = [
     id: "panama",
     name: "Panamá",
     emoji: "🌆",
-    color: "#6A1B9A",
+    color: "#c91010",
     bgColor: "#F3E5F5",
     region: "Selva urbana",
-    animals: ["gato"],
+    animals: ["gato", "neque"],
     x: 76,
     y: 60,
   },
@@ -414,9 +362,9 @@ export const PROVINCES = [
     name: "Panamá Oeste",
     emoji: "🌿",
     color: "#558B2F",
-    bgColor: "#E8F5E9",
+    bgColor: "#cad109",
     region: "Bosques y ríos",
-    animals: ["ocelote"],
+    animals: ["ocelote", "pava"],
     x: 62,
     y: 60,
   },
@@ -424,10 +372,10 @@ export const PROVINCES = [
     id: "cocle",
     name: "Coclé",
     emoji: "⛰️",
-    color: "#00897B",
-    bgColor: "#E0F2F1",
+    color: "#890000",
+    bgColor: "#c7c5c5",
     region: "Valle central",
-    animals: ["colibri"],
+    animals: ["colibri", "rana_dorada"],
     x: 38,
     y: 48,
   },
@@ -435,10 +383,10 @@ export const PROVINCES = [
     id: "los-santos",
     name: "Los Santos",
     emoji: "🌊",
-    color: "#0277BD",
-    bgColor: "#E1F5FE",
+    color: "#e76c08",
+    bgColor: "#d2d1cf",
     region: "Costa del Pacífico",
-    animals: ["ballena"],
+    animals: ["ballena", "mono_arana"],
     x: 44,
     y: 78,
   },
@@ -446,10 +394,10 @@ export const PROVINCES = [
     id: "veraguas",
     name: "Veraguas",
     emoji: "🌳",
-    color: "#8D6E63",
+    color: "#09069e",
     bgColor: "#EFEBE9",
     region: "Isla y bosque húmedo",
-    animals: ["paloma"],
+    animals: ["paloma", "guacamaya"],
     x: 30,
     y: 66,
   },
@@ -460,21 +408,16 @@ export const PROVINCES = [
     color: "#37474F",
     bgColor: "#ECEFF1",
     region: "Selva tropical",
-    animals: ["aguila"],
+    animals: ["aguila", "jaguar"],
     x: 88,
     y: 74,
   },
 ];
 
-export const QUIZ_OPTIONS = {
-  rana: ["Rana", "Quetzal", "Loro"],
-  quetzal: ["Quetzal", "Tucán", "Gato"],
-  tucan: ["Tucán", "Ocelote", "Rana"],
-  loro: ["Loro", "Quetzal", "Tucán"],
-  gato: ["Gato", "Ocelote", "Loro"],
-  ocelote: ["Ocelote", "Gato", "Loro"],
-  colibri: ["Colibrí", "Paloma", "Águila"],
-  ballena: ["Ballena", "Ocelote", "Colibrí"],
-  paloma: ["Paloma", "Colibrí", "Águila"],
-  aguila: ["Águila", "Ballena", "Tucán"],
-};
+export function hasPlayableSound(animal) {
+  return Boolean(animal?.soundUrl ?? animal?.soundAsset);
+}
+
+export function getPlayableAnimals() {
+  return ANIMALS.filter(hasPlayableSound);
+}

@@ -16,15 +16,19 @@ import {
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
-import { ANIMALS } from "@/data/animals";
+import { getPlayableAnimals } from "@/data/animals";
 
 export function HomeScreen() {
   const router = useRouter();
   const { discoveries, stars } = useAppContext();
   const insets = useSafeAreaInsets();
-  const found = discoveries.length;
-  const total = ANIMALS.length;
-  const pct = Math.round((found / total) * 100);
+  const playableAnimals = getPlayableAnimals();
+  const playableAnimalIds = new Set(playableAnimals.map((animal) => animal.id));
+  const found = discoveries.filter((animalId) =>
+    playableAnimalIds.has(animalId),
+  ).length;
+  const total = playableAnimals.length;
+  const pct = total > 0 ? Math.round((found / total) * 100) : 0;
 
   return (
     <SafeAreaView style={styles.container}>

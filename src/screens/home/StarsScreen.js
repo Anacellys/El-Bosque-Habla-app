@@ -11,7 +11,7 @@ import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
 import { useAudio } from "@/context/AudioContext";
-import { ANIMALS } from "@/data/animals";
+import { getPlayableAnimals } from "@/data/animals";
 import { MASCOT_AUDIO } from "@/data/mascotAudio";
 
 export function StarsScreen() {
@@ -19,6 +19,11 @@ export function StarsScreen() {
   const { discoveries, stars, narrationEnabled } = useAppContext();
   const { playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
+  const playableAnimals = getPlayableAnimals();
+  const playableAnimalIds = new Set(playableAnimals.map((animal) => animal.id));
+  const playableDiscoveries = discoveries.filter((animalId) =>
+    playableAnimalIds.has(animalId),
+  );
 
   useEffect(() => {
     playSequence([narrationEnabled ? MASCOT_AUDIO.introEstrellas : null]);
@@ -46,7 +51,8 @@ export function StarsScreen() {
         <AppText variant="subtitle">Total de estrellas</AppText>
         <AppText style={styles.starsValue}>{stars} ⭐</AppText>
         <AppText style={styles.summaryText}>
-          Animales descubiertos: {discoveries.length}
+          Animales descubiertos: {playableDiscoveries.length} de{" "}
+          {playableAnimals.length}
         </AppText>
       </View>
 
@@ -54,7 +60,7 @@ export function StarsScreen() {
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       >
-        {ANIMALS.map((animal) => {
+        {playableAnimals.map((animal) => {
           const unlocked = discoveries.includes(animal.id);
           return (
             <Pressable

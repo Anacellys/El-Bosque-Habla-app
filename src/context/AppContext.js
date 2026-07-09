@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -17,13 +18,21 @@ export function AppProvider({ children }) {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedAnimalId, setSelectedAnimalId] = useState(null);
   const [lastResult, setLastResult] = useState(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [gameSession, setGameSession] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const hydrate = async () => {
       try {
         const storedDiscoveries = await AsyncStorage.getItem("discoveries");
         const storedStars = await AsyncStorage.getItem("stars");
         const storedNarration = await AsyncStorage.getItem("narrationEnabled");
+
+        if (!mounted) {
+          return;
+        }
 
         if (storedDiscoveries) {
           setDiscoveries(JSON.parse(storedDiscoveries));
@@ -36,47 +45,84 @@ export function AppProvider({ children }) {
         }
       } catch (error) {
         console.warn("No se pudieron restaurar los datos locales", error);
+      } finally {
+        if (mounted) {
+          // Bloquea las escrituras iniciales hasta terminar de leer AsyncStorage.
+          setIsHydrated(true);
+        }
       }
     };
 
     hydrate();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    AsyncStorage.setItem("discoveries", JSON.stringify(discoveries));
-  }, [discoveries]);
+    if (!isHydrated) {
+      return;
+    }
+    AsyncStorage.setItem("discoveries", JSON.stringify(discoveries)).catch(
+      (error) => {
+        console.warn("No se pudieron guardar los descubrimientos", error);
+      },
+    );
+  }, [discoveries, isHydrated]);
 
   useEffect(() => {
-    AsyncStorage.setItem("stars", String(stars));
-  }, [stars]);
+    if (!isHydrated) {
+      return;
+    }
+    AsyncStorage.setItem("stars", String(stars)).catch((error) => {
+      console.warn("No se pudieron guardar las estrellas", error);
+    });
+  }, [isHydrated, stars]);
 
   useEffect(() => {
-    AsyncStorage.setItem("narrationEnabled", String(narrationEnabled));
-  }, [narrationEnabled]);
+    if (!isHydrated) {
+      return;
+    }
+    AsyncStorage.setItem("narrationEnabled", String(narrationEnabled)).catch(
+      (error) => {
+        console.warn("No se pudo guardar la preferencia de narración", error);
+      },
+    );
+  }, [isHydrated, narrationEnabled]);
 
-  const selectProvince = (provinceId) => setSelectedProvinceId(provinceId);
-  const selectAnimal = (animalId) => setSelectedAnimalId(animalId);
+  const selectProvince = useCallback((provinceId) => {
+    setSelectedProvinceId(provinceId);
+  }, []);
 
-  const markDiscovery = (animalId) => {
+  const selectAnimal = useCallback((animalId) => {
+    setSelectedAnimalId(animalId);
+  }, []);
+
+  const markDiscovery = useCallback((animalId) => {
     setDiscoveries((current) =>
       current.includes(animalId) ? current : [...current, animalId],
     );
-  };
+  }, []);
 
-  const recordResult = (animalId, correct) => {
+  const recordResult = useCallback((animalId, correct) => {
     setSelectedAnimalId(animalId);
     setLastResult({ animalId, correct });
     if (correct) {
-      markDiscovery(animalId);
-      setStars((current) => current + 1);
+      if (!discoveries.includes(animalId)) {
+        setDiscoveries((current) =>
+          current.includes(animalId) ? current : [...current, animalId],
+        );
+        setStars((currentStars) => currentStars + 1);
+      }
     }
-  };
+  }, [discoveries]);
 
-  const toggleNarration = () => {
+  const toggleNarration = useCallback(() => {
     setNarrationEnabled((current) => !current);
-  };
+  }, []);
 
-  const resetProgress = async () => {
+  const resetProgress = useCallback(async () => {
     setDiscoveries([]);
     setStars(0);
     setNarrationEnabled(true);
@@ -85,11 +131,9 @@ export function AppProvider({ children }) {
     await AsyncStorage.removeItem("discoveries");
     await AsyncStorage.removeItem("stars");
     await AsyncStorage.setItem("narrationEnabled", "true");
-  };
+  }, []);
 
-  const [gameSession, setGameSession] = useState(null);
-
-  const startNewSession = () => {
+  const startNewSession = useCallback(() => {
     setGameSession({
       provinceOrderIds: [],
       currentProvinceIndex: 0,
@@ -99,11 +143,11 @@ export function AppProvider({ children }) {
       roundAnimalId: null,
       roundProvinceId: null,
     });
-  };
+  }, []);
 
-  const resetSession = () => {
+  const resetSession = useCallback(() => {
     setGameSession(null);
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -133,6 +177,14 @@ export function AppProvider({ children }) {
       stars,
       lastResult,
       gameSession,
+      selectProvince,
+      selectAnimal,
+      markDiscovery,
+      recordResult,
+      toggleNarration,
+      resetProgress,
+      startNewSession,
+      resetSession,
     ],
   );
 

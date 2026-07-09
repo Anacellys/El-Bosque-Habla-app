@@ -11,7 +11,7 @@ import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
 import { useAudio } from "@/context/AudioContext";
-import { ANIMALS } from "@/data/animals";
+import { ANIMALS, hasPlayableSound } from "@/data/animals";
 import { MASCOT_AUDIO } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
 
@@ -37,7 +37,7 @@ export function ListenScreen() {
       <ScreenTopActions containerStyle={{ top: insets.top + 8 }} />
       <View style={styles.header}>
         <Pressable style={styles.backButton} onPress={() => router.back()}>
-          <AppText style={styles.backText}>←</AppText>
+          <AppText style={styles.backText}>{"<"}</AppText>
         </Pressable>
         <View style={styles.headerTextWrap}>
           <AppText variant="title">Escuchar animales</AppText>
@@ -54,28 +54,42 @@ export function ListenScreen() {
       >
         {ANIMALS.map((animal) => (
           <View key={animal.id} style={styles.card}>
-            <Image
-              source={resolveImageSource(animal.image)}
-              style={styles.image}
-            />
+            {animal.image ? (
+              <Image
+                source={resolveImageSource(animal.image)}
+                style={styles.image}
+                resizeMode="contain"
+              />
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <AppText style={styles.imagePlaceholderIcon}>
+                  {animal.emoji}
+                </AppText>
+              </View>
+            )}
+
             <View style={styles.cardBody}>
               <AppText variant="subtitle" style={styles.animalName}>
                 {animal.name}
               </AppText>
+              <AppText style={styles.province}>{animal.province}</AppText>
               <AppText style={styles.habitat}>{animal.habitat}</AppText>
             </View>
+
             <View style={styles.actionsRow}>
-              <Pressable
-                style={styles.audioButton}
-                onPress={() => playSound(animal)}
-              >
-                <AppText style={styles.audioButtonText}>🔊</AppText>
-              </Pressable>
+              {hasPlayableSound(animal) ? (
+                <Pressable
+                  style={styles.audioButton}
+                  onPress={() => playSound(animal)}
+                >
+                  <AppText style={styles.audioButtonText}>Sonido</AppText>
+                </Pressable>
+              ) : null}
               <Pressable
                 style={styles.audioButton}
                 onPress={() => playName(animal)}
               >
-                <AppText style={styles.audioButtonText}>🗣️</AppText>
+                <AppText style={styles.audioButtonText}>Nombre</AppText>
               </Pressable>
             </View>
           </View>
@@ -137,14 +151,30 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 140,
+    height: 150,
     borderRadius: 16,
+    backgroundColor: "#F6FFF2",
+  },
+  imagePlaceholder: {
+    width: "100%",
+    height: 150,
+    borderRadius: 16,
+    backgroundColor: "#E8F5E9",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imagePlaceholderIcon: {
+    fontSize: 52,
   },
   cardBody: {
     gap: 4,
   },
   animalName: {
     color: "#174D19",
+  },
+  province: {
+    color: "#1B5E20",
+    fontWeight: "800",
   },
   habitat: {
     color: "#5A7A5A",
@@ -163,6 +193,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   audioButtonText: {
+    color: "#174D19",
     fontSize: 16,
+    fontWeight: "800",
   },
 });

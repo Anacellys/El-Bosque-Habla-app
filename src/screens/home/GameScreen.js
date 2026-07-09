@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   Image,
@@ -18,13 +18,11 @@ import { AppText } from "@/components/ui/AppText";
 import { ScreenTopActions } from "@/components/ui/ScreenTopActions";
 import { useAppContext } from "@/context/AppContext";
 import { useAudio } from "@/context/AudioContext";
-import { ANIMALS, PROVINCES } from "@/data/animals";
-
+import { ANIMALS, PROVINCES, hasPlayableSound } from "@/data/animals";
 import { MASCOT_AUDIO } from "@/data/mascotAudio";
 import { resolveImageSource } from "@/utils/imageSource";
 
 function shuffle(values) {
-
   const copy = [...values];
   for (let index = copy.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(Math.random() * (index + 1));
@@ -33,108 +31,42 @@ function shuffle(values) {
   return copy;
 }
 
+function getAnimalById(animalId) {
+  return ANIMALS.find((animal) => animal.id === animalId) ?? null;
+}
+
+function buildRound(province) {
+  const animalIds = province.animals ?? [];
+  const options = animalIds.map(getAnimalById).filter(Boolean);
+  const animalsWithSound = options.filter(hasPlayableSound);
+  const candidates = animalsWithSound.length > 0 ? animalsWithSound : options;
+  const correctAnimal =
+    candidates[Math.floor(Math.random() * candidates.length)] ?? null;
+
+  return {
+    roundProvinceId: province.id,
+    roundAnimalId: correctAnimal?.id ?? null,
+    answerOptionIds: shuffle(options.map((animal) => animal.id)),
+  };
+}
+
 export function GameScreen() {
   const router = useRouter();
-  const { recordResult, narrationEnabled } = useAppContext();
-  const { playName, playSequence, stopAll } = useAudio();
+  const {
+    gameSession,
+    narrationEnabled,
+    recordResult,
+    resetSession,
+    setGameSession,
+  } = useAppContext();
+  const { playSequence, stopAll } = useAudio();
+  const insets = useSafeAreaInsets();
 
   const bounce = useRef(new Animated.Value(0)).current;
   const fade = useRef(new Animated.Value(0)).current;
   const slide = useRef(new Animated.Value(12)).current;
   const retryAudioIndex = useRef(0);
-
-  const insets = useSafeAreaInsets();
-
-  // Sesión local (no se guarda en AppContext, porque el task actual exige
-  // evitar repetir en esta sesión; si quieres persistencia entre pantallas
-  // luego lo conectamos a contexto).
-  const [sessionProvinceOrder, setSessionProvinceOrder] = useState([]); // array de province ids
-  const [currentProvinceIndex, setCurrentProvinceIndex] = useState(0);
-
-  const [correctAnimalId, setCorrectAnimalId] = useState(null);
-  const [answerOptions, setAnswerOptions] = useState([]); // array de 2 animal objects
-
-  const [feedback, setFeedback] = useState("listen");
-
-  const currentProvince =
-    sessionProvinceOrder.length > 0
-      ? PROVINCES.find((p) => p.id === sessionProvinceOrder[currentProvinceIndex]) ?? null
-      : null;
-
-  const totalProvinces = PROVINCES.length;
-  const isLastProvince = currentProvinceIndex === totalProvinces - 1;
-
-  const question = useMemo(() => {
-    if (!correctAnimalId) return null;
-    return ANIMALS.find((a) => a.id === correctAnimalId) ?? null;
-  }, [correctAnimalId]);
-
-
-
-  const buildProvinceRound = (province) => {
-    const ids = province.animals || [];
-    if (ids.length < 2) {
-      return;
-    }
-
-    const chosenCorrectId = ids[Math.floor(Math.random() * ids.length)];
-    const correctAnimal = ANIMALS.find((a) => a.id === chosenCorrectId) ?? null;
-    const optionAnimal = ANIMALS.find((a) => a.id !== chosenCorrectId && ids.includes(a.id)) ?? null;
-
-    const twoAnimals = [correctAnimal, optionAnimal].filter(Boolean);
-    const randomized = shuffle(twoAnimals);
-
-    setCorrectAnimalId(chosenCorrectId);
-    setAnswerOptions(randomized);
-    setFeedback("listen");
-
-    // audio: reproducir sonido real del animal correcto (si no hay asset, se salta)
-    if (correctAnimal) {
-      playSequence([
-        narrationEnabled ? MASCOT_AUDIO.instruccionJuego : null,
-        narrationEnabled ? MASCOT_AUDIO.preguntaSonido : null,
-        correctAnimal.soundUrl ?? correctAnimal.soundAsset ?? null,
-      ]);
-    }
-  };
-
-  const startSession = () => {
-    const order = shuffle(PROVINCES.map((p) => p.id));
-    setSessionProvinceOrder(order);
-    setCurrentProvinceIndex(0);
-    setFeedback("listen");
-  };
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fade, {
-        toValue: 1,
-        duration: 280,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slide, {
-        toValue: 0,
-        duration: 280,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    startSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!sessionProvinceOrder.length) {
-      return;
-    }
-    const provinceId = sessionProvinceOrder[currentProvinceIndex];
-    const province = PROVINCES.find((p) => p.id === provinceId) ?? null;
-    if (!province) {
-      return;
-    }
-    buildProvinceRound(province);
-  }, [currentProvinceIndex, sessionProvinceOrder, narrationEnabled]);
-
+  const lastPlayedRoundRef = useRef(null);
 
   useEffect(() => {
     Animated.parallel([
@@ -152,28 +84,99 @@ export function GameScreen() {
   }, [fade, slide]);
 
   useEffect(() => {
-    if (!question) {
+    if (gameSession?.provinceOrderIds?.length) {
       return;
     }
-    // La mascota pregunta primero y, cuando termina, recién entonces
-    // suena el animal — así nunca se pisan.
+
+    setGameSession({
+      provinceOrderIds: shuffle(PROVINCES.map((province) => province.id)),
+      currentProvinceIndex: 0,
+      correctAnimalId: null,
+      completedProvinceIds: [],
+      roundAnimalId: null,
+      roundProvinceId: null,
+      answerOptionIds: [],
+    });
+  }, [gameSession, setGameSession]);
+
+  const currentProvince = useMemo(() => {
+    if (!gameSession?.provinceOrderIds?.length) {
+      return null;
+    }
+
+    const provinceId =
+      gameSession.provinceOrderIds[gameSession.currentProvinceIndex];
+    return PROVINCES.find((province) => province.id === provinceId) ?? null;
+  }, [gameSession]);
+
+  useEffect(() => {
+    if (!gameSession?.provinceOrderIds?.length || !currentProvince) {
+      return;
+    }
+
+    if (
+      gameSession.roundProvinceId === currentProvince.id &&
+      gameSession.roundAnimalId &&
+      gameSession.answerOptionIds?.length === 2
+    ) {
+      return;
+    }
+
+    setGameSession((current) => {
+      if (!current?.provinceOrderIds?.length) {
+        return current;
+      }
+
+      const round = buildRound(currentProvince);
+      return {
+        ...current,
+        correctAnimalId: round.roundAnimalId,
+        roundAnimalId: round.roundAnimalId,
+        roundProvinceId: round.roundProvinceId,
+        answerOptionIds: round.answerOptionIds,
+      };
+    });
+  }, [currentProvince, gameSession, setGameSession]);
+
+  const correctAnimal = useMemo(
+    () => getAnimalById(gameSession?.roundAnimalId),
+    [gameSession?.roundAnimalId],
+  );
+
+  const answerOptions = useMemo(
+    () =>
+      (gameSession?.answerOptionIds ?? [])
+        .map(getAnimalById)
+        .filter(Boolean),
+    [gameSession?.answerOptionIds],
+  );
+
+  useEffect(() => {
+    if (!correctAnimal || !currentProvince) {
+      return;
+    }
+
+    const roundKey = `${currentProvince.id}:${correctAnimal.id}`;
+    if (lastPlayedRoundRef.current === roundKey) {
+      return;
+    }
+    lastPlayedRoundRef.current = roundKey;
+
     playSequence([
       narrationEnabled ? MASCOT_AUDIO.instruccionJuego : null,
       narrationEnabled ? MASCOT_AUDIO.preguntaSonido : null,
-      question.soundUrl ?? question.soundAsset ?? null,
+      correctAnimal.soundUrl ?? correctAnimal.soundAsset ?? null,
     ]);
 
     return () => {
       stopAll();
     };
-  }, [narrationEnabled, playSequence, question, stopAll]);
+  }, [correctAnimal, currentProvince, narrationEnabled, playSequence, stopAll]);
 
-  const bubbleText = useMemo(() => {
-    if (feedback === "retry") {
-      return "Escuchemos otra vez.";
-    }
-    return "¿Quién hizo este sonido?";
-  }, [feedback]);
+  const totalProvinces = PROVINCES.length;
+  const provinceNumber = (gameSession?.currentProvinceIndex ?? 0) + 1;
+  const isLastProvince = provinceNumber >= totalProvinces;
+  const feedback = gameSession?.feedback ?? "listen";
 
   const triggerBounce = () => {
     Animated.sequence([
@@ -201,38 +204,85 @@ export function GameScreen() {
   };
 
   const handleSelect = (animal) => {
-    if (!question) {
+    if (!correctAnimal || !currentProvince) {
       return;
     }
 
-    if (animal.id === question.id) {
-      recordResult(question.id, true);
+    if (animal.id !== correctAnimal.id) {
+      setGameSession((current) =>
+        current ? { ...current, feedback: "retry" } : current,
+      );
+      triggerBounce();
 
-      // Si esta era la última provincia de la sesión, vamos al cierre.
-      // Para eso, GameScreen va a pasar un param "end" cuando corresponda.
+      const retryAudio =
+        retryAudioIndex.current % 2 === 0
+          ? MASCOT_AUDIO.intentaOtraVez
+          : MASCOT_AUDIO.intentaOtraVez2;
+      retryAudioIndex.current += 1;
+
+      playSequence([
+        narrationEnabled ? retryAudio : null,
+        correctAnimal.soundUrl ?? correctAnimal.soundAsset ?? null,
+      ]);
+      return;
+    }
+
+    stopAll();
+    recordResult(correctAnimal.id, true);
+
+    if (isLastProvince) {
+      resetSession();
       router.push({
         pathname: "/celebration",
         params: {
-          animalId: question.id,
-          mode: question?.meta?.mode ?? "continue",
-          end: question?.meta?.end ?? false,
+          animalId: correctAnimal.id,
+          next: "/forest-complete",
         },
       });
       return;
     }
 
-    setFeedback("retry");
-    triggerBounce();
-    const retryAudio =
-      retryAudioIndex.current % 2 === 0
-        ? MASCOT_AUDIO.intentaOtraVez
-        : MASCOT_AUDIO.intentaOtraVez2;
-    retryAudioIndex.current += 1;
-    playSequence([
-      narrationEnabled ? retryAudio : null,
-      question.soundUrl ?? question.soundAsset ?? null,
-    ]);
+    setGameSession((current) => {
+      if (!current) {
+        return current;
+      }
+
+      return {
+        ...current,
+        currentProvinceIndex: current.currentProvinceIndex + 1,
+        completedProvinceIds: [
+          ...(current.completedProvinceIds ?? []),
+          currentProvince.id,
+        ],
+        correctAnimalId: null,
+        feedback: "listen",
+        roundAnimalId: null,
+        roundProvinceId: null,
+        answerOptionIds: [],
+      };
+    });
+
+    router.push({
+      pathname: "/celebration",
+      params: {
+        animalId: correctAnimal.id,
+        next: "/game",
+      },
+    });
   };
+
+  const handleReplay = () => {
+    if (!correctAnimal) {
+      return;
+    }
+
+    playSequence([correctAnimal.soundUrl ?? correctAnimal.soundAsset ?? null]);
+  };
+
+  const bubbleText =
+    feedback === "retry"
+      ? "Inténtalo de nuevo"
+      : "Escucha el sonido y elige su nombre";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -255,47 +305,59 @@ export function GameScreen() {
             <QuetzalMascot size={110} style={styles.mascot} />
           </View>
 
-          <View style={styles.promptWrap}>
-            <AppText style={styles.promptLabel}>
-              Toca la imagen que escuchaste
+          <View
+            style={[
+              styles.provinceCard,
+              { backgroundColor: currentProvince?.bgColor ?? "#FFFFFF" },
+            ]}
+          >
+            <AppText style={styles.progressText}>
+              Provincia {provinceNumber} de {totalProvinces}
+            </AppText>
+            <AppText variant="subtitle" style={styles.provinceName}>
+              {currentProvince?.name ?? "Preparando juego"}
+            </AppText>
+            <AppText style={styles.regionText}>
+              {currentProvince?.region ?? "El bosque está preparando la ronda."}
             </AppText>
           </View>
 
-          <View style={styles.cardsWrap}>
-            {options.map((animal) => {
-              const imageSource = resolveImageSource(animal.image);
+          <Pressable style={styles.replayButton} onPress={handleReplay}>
+            <AppText style={styles.replayText}>Escuchar otra vez</AppText>
+          </Pressable>
 
-              return (
-                <Animated.View
-                  key={animal.id}
-                  style={{ transform: [{ translateX: bounce }] }}
-                >
-                  <Pressable
-                    style={styles.card}
-                    onPress={() => handleSelect(animal)}
-                  >
-                    <Image source={imageSource} style={styles.cardImage} />
-                    <View style={styles.cardFooter}>
-                      <AppText style={styles.cardName}>{animal.name}</AppText>
-                      <Pressable
-                        style={styles.audioButton}
-                        onPress={(event) => {
-                          event.stopPropagation();
-                          playName(animal);
-                        }}
-                      >
-                        <AppText style={styles.audioButtonText}>🔊</AppText>
-                      </Pressable>
-                    </View>
-                  </Pressable>
-                </Animated.View>
-              );
-            })}
-          </View>
-
-          <View style={styles.footer}>
-            <AppText style={styles.footerText}>Escucha, mira y toca.</AppText>
-          </View>
+          <Animated.View
+            style={[
+              styles.optionsWrap,
+              { transform: [{ translateX: bounce }] },
+            ]}
+          >
+            {answerOptions.map((animal) => (
+              <Pressable
+                key={animal.id}
+                style={({ pressed }) => [
+                  styles.answerButton,
+                  pressed && styles.answerButtonPressed,
+                ]}
+                onPress={() => handleSelect(animal)}
+              >
+                {animal.image ? (
+                  <Image
+                    source={resolveImageSource(animal.image)}
+                    style={styles.answerImage}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <View style={styles.answerPlaceholder}>
+                    <AppText style={styles.answerPlaceholderIcon}>
+                      {animal.emoji}
+                    </AppText>
+                  </View>
+                )}
+                <AppText style={styles.answerName}>{animal.name}</AppText>
+              </Pressable>
+            ))}
+          </Animated.View>
         </ScrollView>
       </Animated.View>
     </SafeAreaView>
@@ -331,7 +393,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderWidth: 2,
     borderColor: "#B9E7B1",
-    maxWidth: 280,
+    maxWidth: 300,
   },
   speechText: {
     color: "#1B5E20",
@@ -341,62 +403,82 @@ const styles = StyleSheet.create({
   mascot: {
     marginVertical: 4,
   },
-  promptWrap: {
-    alignItems: "center",
-    marginTop: 8,
-  },
-  promptLabel: {
-    color: "#4E7A4B",
-    fontWeight: "700",
-  },
-  cardsWrap: {
-    gap: 14,
-    marginTop: 12,
-    paddingBottom: 8,
-  },
-  card: {
-    backgroundColor: "#FFFFFF",
+  provinceCard: {
     borderRadius: 24,
     borderWidth: 2,
     borderColor: "#DFF3D0",
-    padding: 12,
-    gap: 10,
-  },
-  cardImage: {
-    width: "100%",
-    height: 125,
-    borderRadius: 18,
-  },
-  cardFooter: {
-    flexDirection: "row",
+    padding: 18,
+    marginTop: 12,
     alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
   },
-  cardName: {
-    flex: 1,
+  progressText: {
+    color: "#5A7A5A",
+    fontWeight: "800",
+  },
+  provinceName: {
+    color: "#174D19",
+    marginTop: 4,
+    textAlign: "center",
+  },
+  regionText: {
+    color: "#4E7A4B",
+    fontWeight: "700",
+    marginTop: 4,
+    textAlign: "center",
+  },
+  replayButton: {
+    alignSelf: "center",
+    backgroundColor: "#FFE082",
+    borderRadius: 999,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    marginTop: 16,
+  },
+  replayText: {
     color: "#174D19",
     fontWeight: "800",
-    fontSize: 16,
   },
-  audioButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#FFE082",
+  optionsWrap: {
+    gap: 14,
+    marginTop: 18,
+  },
+  answerButton: {
+    minHeight: 132,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 22,
+    borderWidth: 2,
+    borderColor: "#B9E7B1",
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  answerButtonPressed: {
+    transform: [{ scale: 0.98 }],
+    backgroundColor: "#E8F5E9",
+  },
+  answerName: {
+    color: "#174D19",
+    fontWeight: "900",
+    fontSize: 22,
+    textAlign: "center",
+  },
+  answerImage: {
+    width: "100%",
+    height: 96,
+    borderRadius: 16,
+    backgroundColor: "#F6FFF2",
+  },
+  answerPlaceholder: {
+    width: "100%",
+    height: 96,
+    borderRadius: 16,
+    backgroundColor: "#E8F5E9",
     alignItems: "center",
     justifyContent: "center",
   },
-  audioButtonText: {
-    fontSize: 18,
-  },
-  footer: {
-    alignItems: "center",
-    marginTop: 14,
-    paddingBottom: 6,
-  },
-  footerText: {
-    color: "#5A7A5A",
-    fontWeight: "700",
+  answerPlaceholderIcon: {
+    fontSize: 42,
   },
 });

@@ -24,7 +24,7 @@ const CONFETTI_COUNT = 14;
 export function CelebrationScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { narrationEnabled } = useAppContext();
+  const { narrationEnabled, resetSession } = useAppContext();
   const { playSequence, stopAll } = useAudio();
   const insets = useSafeAreaInsets();
 
@@ -183,7 +183,10 @@ export function CelebrationScreen() {
 
     // Si viene como "continue", volvemos a /game preservando la sesión.
     // (GameScreen decide si avanza o reinicia según la sesión almacenada en AppContext.)
-    const target = "/game";
+    const target = params.next ?? "/game";
+    if (target === "/forest-complete") {
+      resetSession();
+    }
 
     Animated.sequence([
       Animated.timing(buttonScale, {
@@ -282,10 +285,18 @@ export function CelebrationScreen() {
             },
           ]}
         >
-          <Image
-            source={resolveImageSource(animal.image)}
-            style={styles.image}
-          />
+          {animal.image ? (
+            <Image
+              source={resolveImageSource(animal.image)}
+              style={styles.image}
+            />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <AppText style={styles.imagePlaceholderIcon}>
+                {animal.emoji}
+              </AppText>
+            </View>
+          )}
           <AppText variant="subtitle" style={styles.animalName}>
             {animal.name}
           </AppText>
@@ -358,6 +369,17 @@ const styles = StyleSheet.create({
     width: 220,
     height: 180,
     borderRadius: 18,
+  },
+  imagePlaceholder: {
+    width: 220,
+    height: 180,
+    borderRadius: 18,
+    backgroundColor: "#E8F5E9",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imagePlaceholderIcon: {
+    fontSize: 64,
   },
   animalName: {
     marginTop: 10,
